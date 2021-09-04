@@ -18,7 +18,7 @@ class RoundTripLatencyCalculator:
         for i in range(self.num_links):
             delay += self.calculate_link_contribution(i)
 
-        return delay
+        return 2 * delay
         
 
     def calculate_link_contribution(self, hop_number):
@@ -43,7 +43,7 @@ class RoundTripLatencyCalculator:
     def calculate_queuing_delay(self, hop_number):
         delay_factor = (self.packet_len * self.avg_packet_ar[hop_number]) / self.bandwidths[hop_number]
 
-        return (0.1 / (1 - delay_factor)) - 0.1
+        return (0.1 / (1.0 - delay_factor) - 0.1)
 
 
 if __name__ == "__main__":
