@@ -9,7 +9,7 @@ class RoundTripLatencyCalculator:
         self.distances = config['distances']
         self.transm_spd = config['transmission_speeds']
         self.p_delays = config['processing_delays']
-        self.avg_packet_ar = config['average_packet_arrival_rate']
+        self.avg_packet_ar = config['average_packet_arrival_rates']
         
 
     def calculate_total_RTT(self):

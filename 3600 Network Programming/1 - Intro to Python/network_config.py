@@ -5,5 +5,5 @@ config = {
         'distances' : [], 
         'transmission_speeds' : [], 
         'processing_delays' : [], 
-        'average_packet_arrival_rate' : []
+        'average_packet_arrival_rates' : []
         }
