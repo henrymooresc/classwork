@@ -1,22 +1,19 @@
-# TODO: add any import statements required
 from socket import *
 from struct import pack, unpack
 
+HEADER_SIZE = 4
 
 class BufferedTCPClient:
 
     def __init__(self, server_host='localhost', server_port=36001, buffer_size=1024):
         self.buffer_size = buffer_size
 
-        # TODO: Create a socket and establish a TCP connection with server 
+        # Creates the socket and connects it to specified server
         self.sock = socket(AF_INET, SOCK_STREAM)
         self.sock.connect((server_host, server_port))
 
 
-    # This method is called by the autograder. You must implement it, and you cannot change the method signature. It should accept a message
-    # from the user, which is packed according to the format specified for this assignment and then sent into the socket.
-    # TODO: * Send a message to the server containing the message passed in to the function. 
-    #           * Remember to pack it using the format defined in the instructions. 
+    # Accepts a message and sends it to the connected server.
     def send_message(self, message):
         print("CLIENT: Attempting to send a message...")
         
@@ -24,59 +21,56 @@ class BufferedTCPClient:
 
         data = pack("!I" + str(messageLength) + "s", messageLength, message.encode())
 
+        # Send call wrapped in try/except for handling an abrupt disconnect
         try:
             self.sock.send(data)
 
-        except ConnectionError:
-            print("Connection Error!")
+        except ConnectionResetError:
+            print("CLIENT: Connection reset error, send failed...")
 
 
-    # This method is called by the autograder. You must implement it, and you cannot change the method signature. It should wait to receive a 
-    # message from the socket, which is then returned to the user. It should return two values: the message received and whether or not it was received 
-    # successfully. In the event that it was not received successfully, return an empty string for the message.
-    # TODO: * Return the *string* sent back by the server. This should be the same string you sent, except that first 10 characters will have been removed
-    #           * Be sure to set the bufsize parameter to self.buffer_size when calling the socket's receive function
-    #           * Remember that we're sending packed messages back and forth, for the format defined in the assignment instructions. You'll have to unpack
-    #             the message and return just the string. Don't return the raw response from the server.
-    #       * Handle any errors associated with the server disconnecting
+    # Waits to receieve a message from the socket from the server.
+    # Returns the message received and a bool indicating if the receive was successful. If not successful it returns an empty string
     def receive_message(self):
         print("CLIENT: Attempting to receive a message...")
-        
-        HEADER_SIZE = 4
 
+        # Recv call wrapped in try/except for handling an abrupt disconnect
         try:
             data = self.sock.recv(HEADER_SIZE)
 
+            # Ensuring data was actually received
             if data:
                 length = unpack("!I", data)[0]
 
                 payload = ""
 
+                # Looping to ensure the entire message is received if it is larger than the buffer size
                 while len(payload) < length:
-                    buffSize = min(self.buffer_size, length - len(payload))
 
+                    # Lowers the buffer size to ensure the recv call doesn't grab data for a different message
+                    buffSize = min(self.buffer_size, length - len(payload))
                     data = self.sock.recv(buffSize)
 
                     if data:
                         payload += data.decode()
 
                     else:
-                        print("Connection ended!")
+                        print("CLIENT: Empty byte array, receive failed...")
                         return "", False
 
                 return payload, True
 
+            # If an empty byte array is returned, it indicates the connection was closed
             else:
-                print("Connection ended!")
+                print("CLIENT: Empty byte array, receive failed...")
                 return "", False
         
-        except ConnectionError:
-            print("Connection Error!")
+        except ConnectionResetError:
+            print("CLIENT: Connection reset error, receive failed...")
             return "", False
 
 
-    # This method is called by the autograder. You must implement it, and you cannot change the method signature. It should close your socket.
-    # TODO: Close your socket
+    # Closes the client socket
     def shutdown(self):
         print("Client: Attempting to shut down...")
         self.sock.close()

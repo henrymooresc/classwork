@@ -1,109 +1,107 @@
-# TODO: Include any necessary import statements
 from socket import *
 from struct import pack, unpack
 
+HEADER_SIZE = 4
+
 class BufferedTCPEchoServer(object):
+    
     def __init__(self, host = '', port = 36001, buffer_size = 1024):
-        # Save the buffer size to a variable. You'll need this later
         self.buffer_size = buffer_size
 
-        # This variable is used to tell the server when it should shut down. Our implementation of this server is centered
-        # around one or more while loops that keeps the server listening for new connection requests and new messages from
-        # a connected client. This should continue forever, or until this self.keep_running is set to False. My testing
-        # code will use self.keep_running to shutdown the server for one test case 
+        # This variable is used to tell the server when it should shut down.
         self.keep_running = True
 
-        # TODO: Create and bind the server socket
+        # Creates and binds the server socket
         self.sock = socket(AF_INET, SOCK_STREAM)
         self.sock.bind((host, port))
 
-
-    # This function starts the server listening for new connections and new messages. It initiates the core loop of our 
-    # server, where we loop continuously listening for a new connection, or if we are already connected, listening for a new 
-    # message. I recommend breaking the functionality up into helper functions
-    # Remember that this server can only talk to one connected client at a time. We'll implement a server that
-    # can connect to multiple clients at once in a future project.
-    # TODO: * Listen for new connections
-    #       * Accept new connections
-    #       * Receive messages from the connected client until it disconnects. 
-    #           * Be sure to set the bufsize parameter to self.buffer_size when calling the socket's receive function
-    #       * When a message is received, remove the first ten characters and then send it back to the client. 
-    #           * You can use the slice operator to remove the first 10 characters: shorter_string = my_string_variable[10:] 
-    #           * You will need to package the message using the format discussed in the assignment instructions
-    #       * On disconnect, attempt to accept a new connection
-    #       * This process should continue until self.keep_running is set to False. (The program doesn't need immediately close when the value changes)
-    #       * Shutdown the server's socket before exiting the program
+    # Listens for new connections and new messages. Calls helper functions to handle receiving and sending data
     def start(self):
         print('SERVER: listening...')
-        is_connected = False
 
+        # Loops until keep_running is set to False
         while self.keep_running:
 
-            if is_connected:
+            # Listens for and accepts new connections
+            self.sock.listen(1)
+            self.connSock, self.connAddr = self.sock.accept()
+            is_connected = True
+            print("SERVER: New connection made")
+
+            # Looks for messages until the client disconnects
+            while is_connected:
                 is_connected = self.receive_message()
-            
-            else:
-                self.sock.listen(1)
-                self.connSock, self.connAddr = self.sock.accept()
-                is_connected = True
 
-                self.receive_message()
+            # Closes the socket for disconnected client
+            print("SERVER: Closing socket for client " + self.connAddr[0])
+            self.connSock.close()
 
-    # Helper Receive Function
+        self.shutdown()
+
+    # Receives a message from the client connection and passes it into the send_message function
+    # Returns a bool to indicate if the interaction was successful
     def receive_message(self):
-        HEADER_SIZE = 4
+        print("SERVER: Attempting to receieve...")
 
+        # Recv call wrapped in try/except for handling an abrupt disconnect
         try:
             data = self.connSock.recv(HEADER_SIZE)
 
+            # Ensuring data was actually received
             if data:
                 length = unpack("!I", data)[0]
 
                 payload = ""
 
+                # Looping to ensure the entire message is received if it is larger than the buffer size
                 while len(payload) < length:
-                    buffSize = min(self.buffer_size, length - len(payload))
 
+                    # Lowers the buffer size to ensure the recv call doesn't grab data for a different message
+                    buffSize = min(self.buffer_size, length - len(payload))
                     data = self.connSock.recv(buffSize)
 
                     if data:
                         payload += data.decode()
 
                     else:
-                        self.connSock.close()
+                        print("SERVER: Empty byte array, receive failed...")
                         return False
 
-                connStatus = self.send_message(payload)
-                return connStatus
+                # Passes the message on to be sliced and sent back to the client
+                return self.send_message(payload)
 
+            # If an empty byte array is returned, it indicates the connection was closed
             else:
-                self.connSock.close()
+                print("SERVER: Empty byte array, receive failed...")
                 return False
         
-        except ConnectionError:
-            self.connSock.close()
+        except ConnectionResetError:
+            print("SERVER: Connection reset error, receive failed...")
             return False
 
-    # Helper Send Function
+    # Accepts a message and sends a modified version to the client
+    # Returns a bool to indicate if the send was successful
     def send_message(self, message):
 
+        # Slices off the first 10 characters as specified
         message = message[10:]
-        messageLength = len(message)
 
+        # Packing the message for transmission
+        messageLength = len(message)
         data = pack("!I" + str(messageLength) + "s", messageLength, message.encode())
 
+        print("SERVER: Attempting to send response...")
+
+        # Send call wrapped in try/except to handle abrupt disconnects
         try:
             self.connSock.send(data)
             return True
 
-        except ConnectionError:
-            self.connSock.close()
+        except ConnectionResetError:
+            print("SERVER: Connection reset error, send failed...")
             return False
 
-    # This method is called by the autograder when it is ready to shut down your program. You should clean up your server socket
-    # here. Note that all other sockets opened by the server also need to be closed once you are done with them. You should be closing
-    # the individual client sockets generated by socket.accept() inside of your start() function 
-    # TODO: Clean up your server socket
+    # Closes the server socket
     def shutdown(self):
         print("SERVER: shutting down...")
         self.sock.close()
