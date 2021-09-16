@@ -1,4 +1,6 @@
 # TODO: Include any necessary import statements
+from socket import *
+from struct import pack, unpack
 
 class BufferedTCPEchoServer(object):
     def __init__(self, host = '', port = 36001, buffer_size = 1024):
@@ -12,6 +14,8 @@ class BufferedTCPEchoServer(object):
         self.keep_running = True
 
         # TODO: Create and bind the server socket
+        self.sock = socket(AF_INET, SOCK_STREAM)
+        self.sock.bind((host, port))
 
 
     # This function starts the server listening for new connections and new messages. It initiates the core loop of our 
@@ -31,7 +35,70 @@ class BufferedTCPEchoServer(object):
     #       * Shutdown the server's socket before exiting the program
     def start(self):
         print('SERVER: listening...')
+        is_connected = False
 
+        while self.keep_running:
+
+            if is_connected:
+                is_connected = self.receive_message()
+            
+            else:
+                self.sock.listen(1)
+                self.connSock, self.connAddr = self.sock.accept()
+                is_connected = True
+
+                self.receive_message()
+
+    # Helper Receive Function
+    def receive_message(self):
+        HEADER_SIZE = 4
+
+        try:
+            data = self.connSock.recv(HEADER_SIZE)
+
+            if data:
+                length = unpack("!I", data)[0]
+
+                payload = ""
+
+                while len(payload) < length:
+                    buffSize = min(self.buffer_size, length - len(payload))
+
+                    data = self.connSock.recv(buffSize)
+
+                    if data:
+                        payload += data.decode()
+
+                    else:
+                        self.connSock.close()
+                        return False
+
+                connStatus = self.send_message(payload)
+                return connStatus
+
+            else:
+                self.connSock.close()
+                return False
+        
+        except ConnectionError:
+            self.connSock.close()
+            return False
+
+    # Helper Send Function
+    def send_message(self, message):
+
+        message = message[10:]
+        messageLength = len(message)
+
+        data = pack("!I" + str(messageLength) + "s", messageLength, message.encode())
+
+        try:
+            self.connSock.send(data)
+            return True
+
+        except ConnectionError:
+            self.connSock.close()
+            return False
 
     # This method is called by the autograder when it is ready to shut down your program. You should clean up your server socket
     # here. Note that all other sockets opened by the server also need to be closed once you are done with them. You should be closing
@@ -39,6 +106,7 @@ class BufferedTCPEchoServer(object):
     # TODO: Clean up your server socket
     def shutdown(self):
         print("SERVER: shutting down...")
+        self.sock.close()
 
 
 if __name__ == "__main__":
