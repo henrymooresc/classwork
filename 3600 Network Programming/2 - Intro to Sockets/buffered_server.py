@@ -4,7 +4,7 @@ from struct import pack, unpack
 HEADER_SIZE = 4
 
 class BufferedTCPEchoServer(object):
-    
+
     def __init__(self, host = '', port = 36001, buffer_size = 1024):
         self.buffer_size = buffer_size
 
@@ -17,12 +17,12 @@ class BufferedTCPEchoServer(object):
 
     # Listens for new connections and new messages. Calls helper functions to handle receiving and sending data
     def start(self):
-        print('SERVER: listening...')
 
         # Loops until keep_running is set to False
         while self.keep_running:
 
             # Listens for and accepts new connections
+            print('SERVER: listening...')
             self.sock.listen(1)
             self.connSock, self.connAddr = self.sock.accept()
             is_connected = True
