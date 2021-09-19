@@ -2,17 +2,16 @@
 #include <stdio.h>
 
 int main(int argc, char **argv)
-{
-    printf("In test\n");
+{   
     
-    char *p = malloc(sizeof(argv[1]));
+    void *p1, *p2, *p3, *p4;
+    p1 = malloc(120);
+    p2 = malloc(80);
+    p3 = malloc(250);
+    p4 = malloc(69);
 
-    p = argv[1];
+    //printf("p1: %p --- p2: %p --- p3: %p\n", p1, p2, p3);
+    free(p1);
+    free(p3);
 
-    printf("test: %s\n", p);
-
-    free(p);
-
-    printf("ran test\n");
-    return 1;
 }
