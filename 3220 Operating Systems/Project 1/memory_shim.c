@@ -1,12 +1,11 @@
 #define _GNU_SOURCE
 
 #include <dlfcn.h>
-#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_CALLS 50
+#define MAX_CALLS 500
 
 void __attribute__((constructor)) lib_init();
 void __attribute__((destructor)) lib_destroy();
@@ -18,8 +17,8 @@ int numMallocs = 0;
 int numFreed = 0;
 
 void *mallocAddrs[MAX_CALLS];
-size_t memSizes[MAX_CALLS];
 void *freedAddrs[MAX_CALLS];
+size_t memSizes[MAX_CALLS];
 
 void lib_init()
 {
@@ -27,19 +26,26 @@ void lib_init()
     original_free = dlsym(RTLD_NEXT, "free");
 }
 
+// Upon destruction, runs through the void * arrays to find unfreed malloc calls
+// Writes the resulting leak sizes to a text file for leakcount.c to read and output
 void lib_destroy()
 {
     char *buffStr = original_malloc(100000);
     int leaked;
 
-    for (int i = 1; i < numMallocs; i++)
+    for (int i = 0; i < numMallocs; i++)
     {
         leaked = 1;
+
         for (int k = 0; k < numFreed; k++)
         {
+            // Checks for the first matching address in the freed array
+            // If found the freed address is removed to avoid reused address space causing matches
             if (mallocAddrs[i] == freedAddrs[k])
             {
                 leaked = 0;
+                freedAddrs[k] = NULL;
+                break;
             }
         }
 
@@ -55,36 +61,6 @@ void lib_destroy()
     fp = fopen("leaks_found.txt", "w");
     fputs(buffStr, fp);
     fclose(fp);
-
-    /*
-    char *bufstrM = original_malloc(1024);
-
-    for (int i = 1; i < numMallocs; i++)
-    {
-        char temp[21] = "";
-        sprintf(temp, "%p:%zd | ", mallocAddrs[i], memSizes[i]);
-        strcat(bufstrM, temp);
-    }
-    
-    char *bufstrF = original_malloc(1024);
-
-    for (int k = 0; k < numFreed; k++)
-    {
-        char temp2[17] = "";
-        sprintf(temp2, "%p | ", freedAddrs[k]);
-        strcat(bufstrF, temp2);
-    }
-    
-    FILE *fp;
-
-    fp = fopen("malloc_list.txt", "w");
-    fputs(bufstrM, fp);
-    fclose(fp);
-
-    fp = fopen("freed_list.txt", "w");
-    fputs(bufstrF, fp);
-    fclose(fp);
-    */
 }
 
 void *malloc(size_t size)
