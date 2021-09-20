@@ -1,0 +1,47 @@
+3220 - Project 1
+Henry Moore
+
+# Description
+This project consists of three files and a make file to compile them. 
+
+leakcount.c runs a given file and keeps track of any calls to malloc and free. 
+Upon completion of the child process the malloc and free calls are compared to 
+find leaked memory. The leaked sizes are then output to stderr along with the 
+total sum of the leaks.
+
+memory_shim.c is the shim library to intercept calls to malloc and free. It 
+logs the void pointers returned until the program completes. Once finished 
+the calls are compared and any leaks are written to an output file.
+
+sctracer.c runs a given file and keeps track of any system calls made. The 
+system call numbers are recorded until the child process completes. Once done 
+the calls are reviewed and counted for how many each call is made before being 
+written to the given output file.
+
+# Design
+leakcount.c is pretty simple as its only real responsibility is to format the 
+input correctly for execvpe and then reading/processing the results.
+
+memory_shim.c creates the ability to intercept the calls to malloc and free 
+made in the child process. The shim malloc and free functions simply store the 
+void pointer returned from the original malloc and free functions into an array. 
+The calculation of leaks is done in the destructor once the child process has 
+completed. The array of malloc pointers is looped through and compared to the 
+array of freed pointers. If a match is found, the size allocated is written to 
+a file for leakcount.c to read. The matched entry in the freed array is also 
+replaced with NULL so that it doesn't trigger a match again for any reused 
+address spaces.
+
+sctracer.c first has to parse the given file to run and its potential arguments. 
+Since the file to be ran can be either a single arg or a string of args, a new 
+argv array is made. The new argv is populated with whatever is given, using strtok 
+to divide up the string if there are multiple args. Then a child process is made, 
+sets up ptrace, waits for the parent process to be ready to trace, and calls execvp 
+with the given file to run. The parent process loops until the child process ends, 
+logging all system call numbers into an array. Upon completion the system call nums 
+are ordered using qsort, counted, and the results written to the given output file.
+
+# Known Problems
+I think memory_shim.c won't be able to handle a leak of a very large size as I 
+couldn't find a way around using a temp string on line 53. If the size is too large 
+the temp string won't be large enough to hold it.

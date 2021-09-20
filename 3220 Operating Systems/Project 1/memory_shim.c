@@ -5,21 +5,18 @@
 #include <stdio.h>
 #include <string.h>
 
-// TODO: Fix the magic numbers for calls and buffer size
-#define MAX_CALLS 500
-
 void __attribute__((constructor)) lib_init();
 void __attribute__((destructor)) lib_destroy();
 
-static void * (*original_malloc)(size_t size);
+static void *(*original_malloc)(size_t size);
 static void (*original_free)(void *ptr);
 
 int numMallocs = 0;
 int numFreed = 0;
 
-void *mallocAddrs[MAX_CALLS];
-void *freedAddrs[MAX_CALLS];
-size_t memSizes[MAX_CALLS];
+void **mallocAddrs;
+void **freedAddrs;
+size_t *memSizes;
 
 void lib_init()
 {
@@ -31,7 +28,7 @@ void lib_init()
 // Writes the resulting leak sizes to a text file for leakcount.c to read and output
 void lib_destroy()
 {
-    char *buffStr = original_malloc(100000);
+    char *buffStr = original_malloc(sizeof(char));
     int leaked;
 
     for (int i = 0; i < numMallocs; i++)
@@ -55,6 +52,7 @@ void lib_destroy()
         {
             char temp[20] = "";
             sprintf(temp, "%zd|", memSizes[i]);
+            buffStr = realloc(buffStr, sizeof(buffStr) + sizeof(strlen(temp)));
             strcat(buffStr, temp);
         }
     }
@@ -63,7 +61,13 @@ void lib_destroy()
     FILE *fp;
     fp = fopen("leaks_found.txt", "w");
     fputs(buffStr, fp);
+
+    // Cleanup
     fclose(fp);
+    original_free(buffStr);
+    original_free(mallocAddrs);
+    original_free(freedAddrs);
+    original_free(memSizes);
 }
 
 // Intercepts malloc calls to save the pointer and size allocated for later comparison
@@ -71,9 +75,13 @@ void *malloc(size_t size)
 {
     void *p = original_malloc(size);
 
-    mallocAddrs[numMallocs] = p;
-    memSizes[numMallocs] = size;
     numMallocs++;
+
+    mallocAddrs = realloc(mallocAddrs, sizeof(void *) * numMallocs);
+    mallocAddrs[numMallocs - 1] = p;
+
+    memSizes = realloc(memSizes, sizeof(size_t) * numMallocs);
+    memSizes[numMallocs - 1] = size;
 
     return p;
 }
@@ -81,8 +89,10 @@ void *malloc(size_t size)
 // Intercepts free calls to save the pointer for later comparison
 void free (void *ptr)
 {
-    freedAddrs[numFreed] = ptr;
     numFreed++;
+
+    freedAddrs = realloc(freedAddrs, sizeof(void *) * numFreed);
+    freedAddrs[numFreed - 1] = ptr;
 
     original_free(ptr);
 }

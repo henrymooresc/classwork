@@ -7,6 +7,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+int BUFFER_SIZE = 1024;
+
 int main(int argc, char **argv)
 {
     // Creating arg array to pass to execvpe
@@ -30,16 +32,20 @@ int main(int argc, char **argv)
     wait(NULL);
 
     // Reads leak data from shim output file
-    // TODO: Fix the magic number data size
-    char data[100000];
+    char buffStr[BUFFER_SIZE];
+    char *data = malloc(sizeof(char));
     FILE *fp = fopen("leaks_found.txt", "r");
-    fgets(data, sizeof(data), fp);
+
+    while (fgets(buffStr, sizeof(buffStr), fp) != NULL)
+    {
+        data = realloc(data, sizeof(data) + sizeof(buffStr));
+        strcat(data, buffStr);
+    }
 
     fclose(fp);
 
     int num = 0;
     int totalSize = 0;
-
     char *leak;
 
     // Chops up the string of data for printing and calculation of total leak size
@@ -53,4 +59,8 @@ int main(int argc, char **argv)
     }
 
     fprintf(stderr, "TOTAL %d %d\n", num, totalSize);
+
+    // Cleanup
+    free(data);
+    free(leak);
 }
