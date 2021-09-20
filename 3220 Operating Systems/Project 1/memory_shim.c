@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// TODO: Fix the magic numbers for calls and buffer size
 #define MAX_CALLS 500
 
 void __attribute__((constructor)) lib_init();
@@ -49,6 +50,7 @@ void lib_destroy()
             }
         }
 
+        // If no match is found, the leak is added to the buffStr
         if (leaked == 1)
         {
             char temp[20] = "";
@@ -57,12 +59,14 @@ void lib_destroy()
         }
     }
 
+    // Writes string of leaks found to output file for leakcount.c to read
     FILE *fp;
     fp = fopen("leaks_found.txt", "w");
     fputs(buffStr, fp);
     fclose(fp);
 }
 
+// Intercepts malloc calls to save the pointer and size allocated for later comparison
 void *malloc(size_t size)
 {
     void *p = original_malloc(size);
@@ -74,6 +78,7 @@ void *malloc(size_t size)
     return p;
 }
 
+// Intercepts free calls to save the pointer for later comparison
 void free (void *ptr)
 {
     freedAddrs[numFreed] = ptr;
