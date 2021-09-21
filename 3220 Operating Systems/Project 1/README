@@ -44,10 +44,11 @@ are ordered using qsort, counted, and the results written to the given output fi
 # Known Problems
 The memory_shim can only support a limited number of calls to malloc/free as I 
 was unable to figure out how to get dynamically allocated arrays for storing calls 
-working correctly.
+working correctly. I thought I had managed it with realloc but not quite.
 
-The sctracer file seems to work correctly on my virtual linux machine and on the 
-McAdams machines when using the sctracertest.c file and others I made. However, 
-the autograder fails all the tests without giving any detail as to why. I don't 
-really know which part is causing this issue as any manual test I do returns what 
-is expected.
+For the sctracer program, I realized I was expecting the wrong results from my 
+manual testing after the last autograder run. I've modified sctracer.c to hopefully 
+be getting the correct results now, but wasn't able to test it much beyond basic 
+comparison with the results from strace. I also didn't have a good solution for my 
+array logging the entry and exit for each system call except the exit_group, so 
+I'm betting that my solution on lines 113-114 will cause issues.

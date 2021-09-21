@@ -73,24 +73,20 @@ int main(int argc, char **argv)
 
         ptrace(PTRACE_SETOPTIONS, child, 0, PTRACE_O_TRACESYSGOOD);
 
-        int processRunning = 1;
-
         // Loops until the process aborts or terminates
-        while (processRunning)
+        while (!WIFEXITED(status))
         {
-            // Waits for a call and the child to change state
-            ptrace(PTRACE_SYSCALL, child, 0, 0);
-            waitpid(child, &status, 0);
-
-            // Checks if the state change was the child exiting
-            if (WIFEXITED(status))
+            do
             {
-                processRunning = 0;
-                break;
-            }
+                // Waits for a call and the child to change state
+                ptrace(PTRACE_SYSCALL, child, 0, 0);
+                waitpid(child, &status, 0);
+            
+            // Loops until the process stops, bit 7 is set, or the process exits
+            } while (!(WIFSTOPPED(status) && WSTOPSIG(status) & 0x80) && !(WIFEXITED(status)));
 
-            // Checks if a system call is made, logs it in syscallArray
-            if (!(WIFSTOPPED(status) && WSTOPSIG(status) & 0x80))
+            // Logs the system call
+            if (!(WIFEXITED(status)))
             {
                 syscallNum = ptrace(PTRACE_PEEKUSER, child, sizeof(long)*ORIG_RAX, NULL);
                 
@@ -112,6 +108,10 @@ int main(int argc, char **argv)
             int num = syscallArray[i++];
 
             for (; i < numCalls && syscallArray[i] == num; i++, count++);
+
+            // Bad way of dealing with the array logging entry and exit
+            if (count % 2 == 0)
+                count = count / 2;
 
             fprintf(fp, "%d\t%d\n", num, count);
         }
