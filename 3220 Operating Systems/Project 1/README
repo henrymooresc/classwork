@@ -42,6 +42,12 @@ logging all system call numbers into an array. Upon completion the system call n
 are ordered using qsort, counted, and the results written to the given output file.
 
 # Known Problems
-I think memory_shim.c won't be able to handle a leak of a very large size as I 
-couldn't find a way around using a temp string on line 53. If the size is too large 
-the temp string won't be large enough to hold it.
+The memory_shim can only support a limited number of calls to malloc/free as I 
+was unable to figure out how to get dynamically allocated arrays for storing calls 
+working correctly.
+
+The sctracer file seems to work correctly on my virtual linux machine and on the 
+McAdams machines when using the sctracertest.c file and others I made. However, 
+the autograder fails all the tests without giving any detail as to why. I don't 
+really know which part is causing this issue as any manual test I do returns what 
+is expected.

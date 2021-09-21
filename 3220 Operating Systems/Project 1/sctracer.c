@@ -82,8 +82,8 @@ int main(int argc, char **argv)
             ptrace(PTRACE_SYSCALL, child, 0, 0);
             waitpid(child, &status, 0);
 
-            // Checks if the state change was the process ending
-            if (WIFEXITED(status) || WIFSIGNALED(status))
+            // Checks if the state change was the child exiting
+            if (WIFEXITED(status))
             {
                 processRunning = 0;
                 break;
@@ -98,7 +98,6 @@ int main(int argc, char **argv)
                 syscallArray = realloc(syscallArray, sizeof(int) * numCalls);
                 syscallArray[numCalls - 1] = syscallNum;
             }
-            ptrace(PTRACE_CONT, child, NULL, NULL);
         }
 
         FILE *fp = fopen(outputFile, "w");
