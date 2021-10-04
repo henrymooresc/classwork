@@ -80,32 +80,111 @@ completed(engl1030,b).
 /* RULES */
 
 /* returns true if all courses are completed */
-complete_all(List).  
+/*complete_all(List) :- check_completed(List).*/
+
+complete_all([]).
+
+complete_all([H|T]) :-
+    completed(H),
+    complete_all(T).
 
 /* return courses in Req-List not completed */
-missing_req(Req-List,Missing-reqs). 
+/*missing_req(Rlist, Mlist) :- 
+    check_missing(Rlist, Mlist).*/
+
+missing_req([], []).
+
+missing_req([Hi|Ti], [Hi|To]) :-
+    \+ completed(Hi),
+    missing_req(Ti, To).
+
+missing_req([_|Ti], To) :- 
+    missing_req(Ti, To).
 
 /* return true if all pre-reqs satisified for Course */
-prereq_satisfied(Course).
+prereq_satisfied(Course) :-
+    course(Course, Plist, _),
+    complete_all(Plist).
 
-/* return a lisst of missing pre-reqs for Course */
-prereq_missing(Course,NP).
+/* return a list of missing pre-reqs for Course */
+prereq_missing(Course,NP) :-
+    course(Course, Plist, _),
+    missing_req(Plist, NP).
 
 /* return true if all co-reqs satisified for Course */
-coreq_satisfied(Course).
+coreq_satisfied(Course) :-
+    course(Course, _, Clist),
+    complete_all(Clist).
 
-/* return a lisst of missing co-reqs for Course */
-coreq_missing(Course,NC).
+/* return a list of missing co-reqs for Course */
+coreq_missing(Course,NC) :-
+    course(Course, _, Clist),
+    missing_req(Clist, NC).
 
 /* return lists of missing pre-reqs in L1 and co-reqs in L2 for course C */
 /* prints a message if course is already completed */
-check_course(C,L1,L2).
+check_course(C,L1,L2) :-
+    completed(C),
+    write('Course already completed'), nl,
+    !, fail;
+    
+    prereq_missing(C, L1),
+    coreq_missing(C, L2).
 
-/* prints all of the missing pre-reqs in L1 and co-reqs in L2 for all */
+/* returns all of the missing pre-reqs in L1 and co-reqs in L2 for all */
 /* courses in LC  or returns true if there are none missing */
-check_schedule(LC,L1,L2).
+check_schedule(LC,L1,L2) :-
+    /*recur_schedule(LC,L1,Clist),*/
+    recur_prereqs(LC,L1),
+    recur_coreqs(LC,Clist),
+    check_enrolled(LC,Clist,L2).
+
+recur_prereqs([], _).
+recur_prereqs([H|T], L) :-
+    \+ prereq_satisfied(H),
+    prereq_missing(H, Plist),
+    recur_prereqs(T, NewL),
+    append(NewL, Plist, L).
+
+recur_prereqs([_|T], L) :-
+    recur_prereqs(T, L).
+
+recur_coreqs([], _).
+recur_coreqs([H|T], L) :-
+    \+ coreq_satisfied(H),
+    coreq_missing(H, Clist),
+    recur_coreqs(T, NewL),
+    append(NewL, Clist, L).
+
+recur_coreqs([_|T], L) :-
+    recur_coreqs(T, L).
+
+/*
+recur_schedule([],_,_).
+
+recur_schedule([HLC|TLC],L1,L2) :-
+    prereq_satisfied(HLC),
+    coreq_satisfied(HLC),
+    recur_schedule(TLC,L1,L2);
+
+    prereq_missing(HLC,Plist),
+    coreq_missing(HLC,Clist),
+    
+    recur_schedule(TLC,NewL1,NewL2),
+
+    append(NewL1, Plist, L1),
+    append(NewL2, Clist, L2).
+*/
+
+check_enrolled(_,[],_).
+check_enrolled(LC, [H|T], L2) :-
+    \+ member(H, LC),
+    check_enrolled(LC, T, NewL2),
+    append(NewL2, [H], L2).
+
+check_enrolled(LC, [_|T], L2) :-
+    check_enrolled(LC, T, L2).
 
 /* prints one (or more) courses that are not completed and do have their */
-/* requisites satisfied. */
-suggest_course(C).
-
+/* requisites satisfied. 
+suggest_course(C).*/
