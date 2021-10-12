@@ -9,9 +9,10 @@ int interruptsAreDisabled;
 void wrapFunc(thread_info *t_info)
 {
     thFuncPtr func = t_info->fPtr;
-    
+    void *results;
+
     interruptsAreDisabled = 0;
-    void *results = func(t_info->args);
+    results = func(t_info->args);
     interruptsAreDisabled = 1;
 
     threadExit(results);
@@ -56,8 +57,8 @@ int threadCreate(thFuncPtr funcPtr, void *argPtr)
     new_thread->cont = malloc(sizeof(ucontext_t));
 
     getcontext(new_thread->cont);
-    new_thread->cont->uc_stack.ss_size = STACK_SIZE;
     new_thread->cont->uc_stack.ss_sp = (void *)malloc(STACK_SIZE);
+    new_thread->cont->uc_stack.ss_size = STACK_SIZE;
     new_thread->cont->uc_stack.ss_flags = 0;
     new_thread->id = NUM_THREADS++;
     new_thread->fPtr = funcPtr;
@@ -103,11 +104,16 @@ void threadJoin(int thread_id, void **result)
 
         if (t_info == NULL)
         {
-            threadYield();
+            if (threadLookup(ready_list, thread_id) == NULL)
+                is_finished = 1;
+            else
+                threadYield();
         }
         else
         {
-            *result = t_info->results;
+            if (result != NULL)
+                *result = t_info->results;
+            
             is_finished = 1;
         }
     }
@@ -169,6 +175,12 @@ void threadUnlock(int lockNum)
 void threadWait(int lockNum, int conditionNum)
 {
     interruptsAreDisabled = 1;
+
+    if (LOCKS_STATUS[lockNum] != 1)
+    {
+        fprintf(stderr, "Unable to wait on unlocked lock");
+        exit(1);
+    }
 
     thread_info *waiting_thread;
     waiting_thread = popFromList(ready_list);
