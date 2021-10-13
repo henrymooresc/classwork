@@ -3,13 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Linked list implementation for tracking threads
 typedef struct thread_info 
 {
     int id;
-    ucontext_t *cont;
     thFuncPtr fPtr;
     void *args;
     void *results;
+    ucontext_t *cont;
     struct thread_info *next;
 } thread_info;
 

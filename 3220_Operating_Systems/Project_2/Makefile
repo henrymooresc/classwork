@@ -10,6 +10,7 @@ threadslib: threads_main.c threads_data.c
 libmythreads:
 	rm -rf *.a
 	ar -cvrs libmythreads.a threads_main.o threads_data.o
+	rm -rf *.o
 
 clean:
-	rm *.o *.a
+	rm *.a

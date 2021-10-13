@@ -1,0 +1,32 @@
+3220 - Project 2
+Henry Moore
+
+# Description
+A simple threading library that allows the user to create and monitor multiple threads.
+
+The file threads_main.c contains the functions we were given to implement in mythreads.h 
+along with an added wrapper function used to ease monitoring when a thread's function 
+completes.
+
+The files threads_data.c and threads_data.h are the implementation of a linked list to 
+store/modify the threads. They contain the structs thread_info and thread_list along 
+with helper functions that threads_main.c uses.
+
+# Design
+I used linked lists to manage the different thread states. There is a list for threads 
+that are ready to run, a list for threads that have finished, and a list for threads 
+waiting on a lock/condition variable. Each list contains a thread_info object that is 
+a struct containing the needed information about each thread and the function it is to 
+run. The first element in the ready_list is the currently running thread.
+
+# Known Problems
+I had an issue with my linked list not properly adding new elements because I had the 
+last element's "next" pointer updated after the new element was added. So the new 
+element was just pointing to itself. Since this screwed up quite a lot down the line 
+I haven't spent enough time testing the lock implementation so I expect there to be 
+issues there.
+
+Also I tried storing the currently running thread in a seperate global thread_info 
+object instead of at the front of ready_list but I was unable to do so. I haven't seen 
+any issues caused by this but it is confusing since it should be in its own RUNNING 
+state.
