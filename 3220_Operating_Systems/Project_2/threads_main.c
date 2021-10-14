@@ -108,8 +108,6 @@ void threadYield()
     t_info = popFromList(ready_list);
     addToList(ready_list, t_info);
 
-    //printf("Trying to yield id:%d to id:%d\n", t_info->id, ready_list->front->id);
-
     if (t_info->id != ready_list->front->id)
     {
         // Swaps context to the next thread in the ready list
@@ -122,7 +120,6 @@ void threadYield()
 // Joins finished threads and saves result of the finished thread
 void threadJoin(int thread_id, void **result)
 {
-    printf("trying to join\n");
     interruptsAreDisabled = 1;
 
     // If the thread does not exist, returns immediately
@@ -141,7 +138,6 @@ void threadJoin(int thread_id, void **result)
         if (t_info == NULL)
         {
             // If thread isn't finished, yield and check again later
-            //printf("thread %d not done, yielding\n", thread_id);
             threadYield();
         }
         else
