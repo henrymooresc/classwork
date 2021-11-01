@@ -58,43 +58,43 @@ class GBNHost():
     # refer to the GBN sender flowchart for details about how to implement responidng to ACKs
     def receive_from_network_layer(self, byte_data):
         is_corrupt = self.is_corrupt(byte_data)
-        
-        pkt_type = unpack("!H", byte_data[:2])[0]
 
-        if pkt_type != 0:
-            if is_corrupt:
+        if is_corrupt:
+            self.simulator.pass_to_network_layer(self.entity, self.last_ack, True)
+
+        elif unpack("!H", byte_data[:2])[0] != 0:
+            seq_num = unpack("!i", byte_data[2:6])[0]
+
+            if seq_num != self.expected_seq_num:
                 self.simulator.pass_to_network_layer(self.entity, self.last_ack, True)
             else:
-                seq_num = unpack("!i", byte_data[2:6])[0]
-                if seq_num != self.expected_seq_num:
-                    self.simulator.pass_to_network_layer(self.entity, self.last_ack, True)
-                else:
-                    payload_len = unpack("!I", byte_data[8:12])[0]
-                    payload = unpack("!" + str(payload_len) + "s", byte_data[12:])[0]
-                    self.simulator.pass_to_application_layer(self.entity, payload.decode())
-                    self.last_ack = self.make_pkt(seq_num, '')
-                    self.simulator.pass_to_network_layer(self.entity, self.last_ack, True)
-                    self.expected_seq_num += 1
+                payload_len = unpack("!I", byte_data[8:12])[0]
+                payload = unpack("!" + str(payload_len) + "s", byte_data[12:])[0]
+                self.simulator.pass_to_application_layer(self.entity, payload.decode())
+                self.last_ack = self.make_pkt(seq_num, '')
+                self.simulator.pass_to_network_layer(self.entity, self.last_ack, True)
+                self.expected_seq_num += 1
 
         else:
-            if not is_corrupt:
-                ack_num = unpack("!i", byte_data[2:6])[0]
-                if ack_num >= self.window_base:
-                    self.window_base = ack_num + 1
-                    self.simulator.stop_timer(self.entity)
-                    if self.window_base != self.next_seq_num:
+            ack_num = unpack("!i", byte_data[2:6])[0]
+
+            if ack_num >= self.window_base:
+                self.window_base = ack_num + 1
+                self.simulator.stop_timer(self.entity)
+                
+                if self.window_base != self.next_seq_num:
+                    self.simulator.start_timer(self.entity, self.timer_interval)
+                
+                while (len(self.app_layer_buffer) > 0 and self.next_seq_num < self.window_base + self.window_size):
+                    payload = self.app_layer_buffer.pop()
+                    pkt = self.make_pkt(self.next_seq_num, payload)
+                    self.unACKed_buffer[self.next_seq_num] = pkt
+                    self.simulator.pass_to_network_layer(self.entity, pkt, False)
+
+                    if self.window_base == self.next_seq_num:
                         self.simulator.start_timer(self.entity, self.timer_interval)
                     
-                    while (len(self.app_layer_buffer) > 0 and self.next_seq_num < self.window_base + self.window_size):
-                        payload = self.app_layer_buffer.pop()
-                        pkt = self.make_pkt(self.next_seq_num, payload)
-                        self.unACKed_buffer[self.next_seq_num] = pkt
-                        self.simulator.pass_to_network_layer(self.entity, pkt, False)
-
-                        if self.window_base == self.next_seq_num:
-                            self.simulator.start_timer(self.entity, self.timer_interval)
-                        
-                        self.next_seq_num += 1
+                    self.next_seq_num += 1
 
             
     # This function is called by the simulator when a timer interrupt is triggered due to an ACK not being 
