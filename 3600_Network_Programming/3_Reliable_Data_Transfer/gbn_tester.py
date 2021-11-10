@@ -167,11 +167,11 @@ if __name__ == "__main__":
     tests = [
         #"Test1_SlowDataRate_0Loss_0Corruption",
         #"Test2_SlowDataRate_25Loss_0Corruption",
-        #"Test3_SlowDataRate_0Loss_25Corruption",
+        "Test3_SlowDataRate_0Loss_25Corruption",
         #"Test4_SlowDataRate_25Loss_25Corruption",
         #"Test5_MediumDataRate_0Loss_0Corruption",
         #"Test6_MediumDataRate_10Loss_0Corruption",
-        "Test7_MediumDataRate_0Loss_10Corruption",
+        #"Test7_MediumDataRate_0Loss_10Corruption",
         #"Test8_MediumDataRate_10Loss_10Corruption",
         #"Test9_FastDataRate_0Loss_0Corruption",
         #"Test10_FastDataRate_10Loss_0Corruption",
