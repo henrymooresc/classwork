@@ -1,0 +1,46 @@
+3220 - Project 3
+Henry Moore
+
+# Description
+    This is my shared library to override calls to malloc, calloc, realloc, and free.
+    It consists of only two files, allocator.c and a makefile. To create the shared 
+    library you just run "make". This will produce libmyalloc.so which can be used by
+    running "LD_PRELOAD=./libmyalloc.so <prog to run>"
+
+# Design
+    allocator.c is designed around creating a set number of "small" object pages and 
+    a variable amount of "large" object pages. Any size above 1024 bytes is considered
+    "large" and is given an individual page. All smaller sizes are divided up into 
+    segregated free lists consisting of objects of the same size.
+
+    The pages and free lists are created by using two structs. The memory_page struct 
+    contains the header information needed for each page created. The linked_list 
+    struct is used to create a linked list of every "block" within a given page. The 
+    linked list is allocated its own section in memory and populated with pointers 
+    to where each "block" exists inside the designated page.
+
+# Known Problems
+    Well this project was extremly difficult for me and as such I was only able to 
+    get a testable version working this morning (The 11th). As such I have not been 
+    able to robustly test my library nor use the autograder. Hopefully the issues 
+    listed here are all/most of them!
+
+    1. For "small" objects, I only created one page for each size. Obviously this means 
+    if a page fills up it can't accept new allocations until something is freed. I 
+    wanted to create a multi-dimensional array for "small" pages that I could add to, 
+    but I ran out of time trying to get a simpler version working.
+
+    2. Realloc does not make the given pointer unaccesible if the allocation stays 
+    in place. Basically if the given new size matches the object size of the page of 
+    the original pointer, it just returns the given pointer. I know realloc is 
+    supposed to get rid of that pointer, but again I didn't have time to figure out 
+    how to manage that.
+
+    3. Not sure if this exactly is a problem, but my "free list" is a list of every 
+    block in the page. Each block has a flag indicating if it is free, but I was 
+    unable to figure out a way to create a free only linked list without breaking 
+    something else in my program.
+
+    4. Also not sure if this is a problem, but I don't use mutex locks in this. 
+    I wasn't sure if we were supposed to or not based on the project description, 
+    and since I was struggling so much to get it working I didn't include them.
