@@ -44,7 +44,7 @@ memory_page *pages[10];
 
 void *malloc(size_t size)
 {
-    if (size <= 0)
+    if (size == 0)
     {
         return NULL;
     }
@@ -122,6 +122,59 @@ void *calloc(size_t num_objs, size_t size)
     return ptr;
 }
 
+void *realloc(void *ptr, size_t new_size)
+{
+    if (ptr == NULL)
+    {
+        return malloc(new_size);
+    }
+
+    size_t real_size;
+
+    if ((new_size & (new_size - 1)) != 0)
+    {
+        real_size = 1;
+        while (real_size < new_size)
+        {
+            real_size *= 2;
+        }
+    }
+    else
+    {
+        real_size = new_size;
+    }
+
+    memory_page *header = (memory_page *)((size_t)ptr & ~((1 << 12) - 1));
+
+    linked_list *temp = header->head;
+    while (temp->ptr != ptr)
+    {
+        temp = temp->next;
+    }
+
+    if (temp->is_free == 1)
+    {
+        return NULL;
+    }
+
+    if (real_size != header->obj_size)
+    {
+        void *new_ptr = malloc(new_size);
+
+        if (new_ptr == NULL)
+        {
+            return NULL;
+        }
+        free(ptr);
+        return new_ptr;
+    }
+    else
+    {
+        free(ptr);
+        return malloc(new_size);
+    }
+}
+
 void free(void *ptr)
 {
     if (ptr == NULL)
@@ -157,7 +210,6 @@ void free(void *ptr)
 }
 
 void lib_init()
-//int main()
 {
     size_t size = PAGESIZE + sizeof(memory_page);
 
@@ -201,31 +253,6 @@ void lib_init()
             
         }
     }
-
-    // printf("header size: %lu\n", sizeof(memory_page));
-
-    // int *ptr = ccalloc(4, sizeof(int));
-
-    // for (int i = 0; i < 18; i++)
-    // {
-    //     printf("%p %d\n", (void *)(ptr + i), ptr[i]);
-    // }
-
-    // uint8_t *bufs[3];
-
-    // for (int i = 0; i < 3; i++)
-    // {
-    //     bufs[i] = mmalloc(bufsizes[i]);
-    //     printf("addr: %p | ", bufs[i]);
-
-    //     memset(bufs[i], i, bufsizes[i]);
-
-    //     for (int j = 0; j < bufsizes[i]; j++)
-    //     {
-    //         printf("%d ", *(bufs[i] + j));
-    //     }
-    //     printf("\n");
-    // }
 }
 
 
