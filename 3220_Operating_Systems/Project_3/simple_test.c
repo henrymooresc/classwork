@@ -33,7 +33,9 @@ int main()
 		for (int b=0; b < bufsizes[i]; b++)
 		{
 			assert (bufs[i][b] == i);
+			printf("%d ", bufs[i][b]);
 		}
+		printf("\n");
 
 		free(bufs[i]);
 	}
