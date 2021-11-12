@@ -4,7 +4,7 @@ from struct import pack, unpack
 class EthernetHeader(LayerHeader):
     def __init__(self, pkt):
         # TODO: Replace the value of header_length with the length of an Ethernet header
-        header_length = 0
+        header_length = 14
         
         # TODO: If this header can be variable length, you will need to update the contents of 
         #       self.header_bytes once you know the full length of the header in order to ensure
@@ -17,6 +17,11 @@ class EthernetHeader(LayerHeader):
         self.ether_type = None
 
         # TODO: Unpack the header and assign the values to the above variables
+        header_string = unpack(f'{header_length}s', self.header_bytes)[0]
+        
+        self.source_addr = header_string[:6]
+        self.dest_addr = header_string[6:12]
+        self.ether_type = header_string[12:]
 
     def protocol(self):
         return "Ethernet"

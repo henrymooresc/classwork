@@ -80,9 +80,9 @@ class PacketSniffer:
     # 0x0800 - IPv4
     # 0x0806 - Address Resolution Protocol
     def extract_network_layer_header(self, pkt, type):
-        if type == #TODO: complete this:
+        if type == b'0x0800':
             return self.extract_IPv4_header(pkt)
-        elif type == #TODO: complete this:
+        elif type == b'0x0806':
             return self.extract_ARP_header(pkt)
         else:
             print("Received unknown network packet type")
