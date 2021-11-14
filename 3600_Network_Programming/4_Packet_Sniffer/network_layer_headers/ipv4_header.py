@@ -4,7 +4,7 @@ from struct import pack, unpack
 class IPv4Header(LayerHeader):
     def __init__(self, pkt):
         # TODO: Replace the value of header_length with the length of an Ethernet header
-        header_length = 0
+        header_length = 20
         
         # TODO: If this header can be variable length, you will need to update the contents of 
         #       self.header_bytes once you know the full length of the header in order to ensure
@@ -28,8 +28,32 @@ class IPv4Header(LayerHeader):
 
         # TODO: Unpack the header and assign the values to the above variables
 
+        data = int.from_bytes(self.header_bytes[:1], 'big')
+
+        self.version = data >> 4
+        self.IHL = data & 15
+        self.TOS = int.from_bytes(self.header_bytes[1:2], 'big')
+        self.total_length = unpack('>H', self.header_bytes[2:4])[0]
+
+        self.identification = unpack('>H', self.header_bytes[4:6])[0]
+
+        data = int.from_bytes(self.header_bytes[6:8], 'big')
+        self.flags = data >> 13
+        self.fragment_offset = data & 8191
+
+        self.TTL = int.from_bytes(self.header_bytes[8:9], 'big')
+        self.transport_protocol = int.from_bytes(self.header_bytes[9:10], 'big')
+        self.checksum = unpack('>H', self.header_bytes[10:12])[0]
+        self.source_addr = unpack('>I', self.header_bytes[12:16])[0]
+        self.dest_addr = unpack('>I', self.header_bytes[16:20])[0]
+
         # TODO: You do not need to unpack any options, if they are present in the header. However, if options 
         #       are present, store the bytes associated with them in self.options_bytes.
+
+        if self.IHL > 5:
+            header_length = self.IHL * 4
+            self.header_bytes = pkt[:header_length]
+            self.options_bytes = pkt[20:header_length]
 
     def protocol(self):
         return "IPv4"

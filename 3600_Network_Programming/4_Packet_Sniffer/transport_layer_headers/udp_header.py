@@ -4,7 +4,7 @@ from struct import pack, unpack
 class UDPHeader(LayerHeader):
     def __init__(self, pkt):
         # TODO: Replace the value of header_length with the length of an Ethernet header
-        header_length = 0
+        header_length = 8
         
         # TODO: If this header can be variable length, you will need to update the contents of 
         #       self.header_bytes once you know the full length of the header in order to ensure
@@ -18,6 +18,10 @@ class UDPHeader(LayerHeader):
         self.checksum = None
 
         # TODO: Unpack the header and assign the values to the above variables
+        self.source_port = unpack('>H', self.header_bytes[:2])[0]
+        self.dest_port = unpack('>H', self.header_bytes[2:4])[0]
+        self.length = unpack('>H', self.header_bytes[4:6])[0]
+        self.checksum = unpack('>H', self.header_bytes[6:])[0]
 
 
     def protocol(self):

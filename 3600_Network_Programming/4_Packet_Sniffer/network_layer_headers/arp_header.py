@@ -4,7 +4,7 @@ from struct import pack, unpack
 class ARPHeader(LayerHeader):
     def __init__(self, pkt):
         # TODO: Replace the value of header_length with the length of an Ethernet header
-        header_length = 0
+        header_length = 28
         
         # TODO: If this header can be variable length, you will need to update the contents of 
         #       self.header_bytes once you know the full length of the header in order to ensure
@@ -23,6 +23,16 @@ class ARPHeader(LayerHeader):
         self.target_protocol_address = None
 
         # TODO: Unpack the header and assign the values to the above variables
+
+        self.hardware_type = unpack('>H', self.header_bytes[:2])[0]
+        self.protocol_type = unpack('>H', self.header_bytes[2:4])[0]
+        self.hardware_address_len = int.from_bytes(self.header_bytes[4:5], 'big')
+        self.protocol_address_len = int.from_bytes(self.header_bytes[5:6], 'big')
+        self.opcode = unpack('>H', self.header_bytes[6:8])[0]
+        self.sender_hardware_address = unpack('6s', self.header_bytes[8:14])[0]
+        self.sender_protocol_address = unpack('>I', self.header_bytes[14:18])[0]
+        self.target_hardware_address = unpack('6s', self.header_bytes[18:24])[0]
+        self.target_protocol_address = unpack('>I', self.header_bytes[24:])[0]
 
     def protocol(self):
         return "ARP"
