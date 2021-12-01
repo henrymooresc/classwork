@@ -1,10 +1,13 @@
 CC=gcc
-CFLAGS= -std=gnu99 -Wall -g -o
+CFLAGS=-Wall -g 
 
-OBJ= filerecovery
+OBJ= filerecovery test
 
 filerecovery: filerecovery.c
-	$(CC) $(CFLAGS) filerecovery $^
+	$(CC) $(CFLAGS) filerecovery.c -o filerecovery 
+
+test: test.c
+	$(CC) $(CFLAGS) test.c -o test
 
 clean:
 	rm -rf  $(BINS) *.o $(objects)
