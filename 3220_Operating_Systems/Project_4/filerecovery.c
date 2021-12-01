@@ -10,83 +10,24 @@ unsigned char data[DATA_SIZE];
 char *dest_path;
 int file_count = 0;
 
-/* Helper Functions======================================================================*/
-
-/* Function: convertHex */
-//Purpose: Converts a unsigned char *hex in little endian to uint32_t in big endian
-uint32_t convertHex(unsigned char *hex, int numBytes)
+//Purpose: Calculates the entry values from three bytes (specific to FAT12)
+FatEntries calcEntries(unsigned char *one, unsigned char *two, unsigned char *three)
 {
-	uint32_t result = 0;
+	FatEntries e;
+	// Split the second byte up
+	uint16_t temp = (uint16_t) *two;
+	uint16_t nib_1 = (temp >> 4); //Dest: Second
+	uint16_t nib_2 = ((temp & 0x0f) << 8); //Dest: First
 
-	for(int i = 0; i < numBytes; i++)
-	{
-		uint32_t temp = ((uint32_t) hex[i]) << (unsigned) (8 * i);
-		result = result | temp;
-	}
+	//Place the nibs into their respective entries
+	uint16_t first = (uint16_t) *one;
+	e.one = (nib_2 | first);
+	uint16_t third = (uint16_t) *three;
+	e.two = (nib_1 | (third << 4));
 
-	return result;
+	return e;
 }
 
-/* Function: filePrint     */
-//Purpose: Print formatted file information to stdout
-void filePrint(File *file)
-{
-	assert(file != NULL);
-	printf("FILE\t");
-
-	assert(file->name != NULL);
-	if(file->not_deleted)
-	{
-		printf("NORMAL\t");
-	}
-	else
-	{
-		printf("DELETED\t");
-	}
-
-	assert(file->path != NULL);
-	int i = 0;
-	while(i < file->path_len)
-	{
-		if(file->path[i] != ' ' && file->path[i] != '.') printf("%c", file->path[i]);
-		i++;
-	}
-
-	if(!file->not_deleted)
-	{
-		printf("_");
-		i = 1;
-	}
-	else
-	{
-		i = 0;
-	}
-
-	while(file->name[i] != ' ' && file->name[i] != '.' && i < 8)
-	{
-		printf("%c", file->name[i]);
-		i++;
-	}
-	
-	printf(".");
-
-	assert(file->ext != NULL);
-	i = 0;
-	while(file->ext[i] != '.' && i < 3)
-	{
-		printf("%c", file->ext[i]);
-		i++;
-	}
-
-	printf("\t");
-	assert(file->size != NULL);
-	printf("%d", convertHex(file->size, 4));
-
-	printf("\n");
-}
-
-/*	Exploration Functions==================================================================*/
-/* Function: fileCreate    */
 File *fileCreate(unsigned char *raw, char *path)
 {
 	File *file = malloc(sizeof(File));
@@ -103,7 +44,6 @@ File *fileCreate(unsigned char *raw, char *path)
 	}
 
 	//Read in name-------------------------------------------------
-	assert(byte_num == 0);
 	file->name = malloc(8 * sizeof(char));
 	for(int i = 0; i < 8; i++)
 	{
@@ -112,7 +52,6 @@ File *fileCreate(unsigned char *raw, char *path)
 	byte_num += 8;
 
 	//Read in extension-------------------------------------------------
-	assert(byte_num == 8);
 	file->ext = malloc(3 * sizeof(char));
 	for(int i = 0; i < 3; i++)
 	{
@@ -121,13 +60,11 @@ File *fileCreate(unsigned char *raw, char *path)
 	byte_num += 3;
 
 	//Read in attributes------------------------------------------------
-	assert(byte_num == 11);
 	file->attributes = malloc(sizeof(char));
 	file->attributes[0] = raw[byte_num];
 	byte_num++;
 
 	//Read in reserved--------------------------------------------------
-	assert(byte_num == 12);
 	file->reserved = malloc(2 * sizeof(char));
 	for(int i = 0; i < 2; i++)
 	{
@@ -136,7 +73,6 @@ File *fileCreate(unsigned char *raw, char *path)
 	byte_num += 2;
 
 	//Read in creation_time-----------------------------------------------
-	assert(byte_num  == 14);
 	file->creation_time = malloc(2 * sizeof(char));
 	for(int i = 0; i < 2; i++)
 	{
@@ -145,7 +81,6 @@ File *fileCreate(unsigned char *raw, char *path)
 	byte_num += 2;
 
 	//Read in creation_date-----------------------------------------------
-	assert(byte_num == 16);
 	file->creation_date = malloc(2 * sizeof(char));
 	for(int i = 0; i < 2; i++)
 	{
@@ -154,7 +89,6 @@ File *fileCreate(unsigned char *raw, char *path)
 	byte_num += 2;
 
 	//Read in last_access info------------------------------------------
-	assert(byte_num == 18);
 	file->last_access = malloc(2 * sizeof(char));
 	for(int i = 0; i < 2; i++)
 	{
@@ -163,7 +97,6 @@ File *fileCreate(unsigned char *raw, char *path)
 	byte_num += 4;
 
 	//Read in lastModified Time------------------------------------------
-	assert(byte_num == 22);
 	file->last_mod_time = malloc(2 * sizeof(char));
 	for(int i = 0; i < 2; i++)
 	{
@@ -172,7 +105,6 @@ File *fileCreate(unsigned char *raw, char *path)
 	byte_num += 2;
 
 	//Read in lastModified Date-------------------------------------------
-	assert(byte_num  == 24);
 	file->last_mod_date = malloc(2 * sizeof(char));
 	for(int i = 0; i < 2; i++)
 	{
@@ -181,7 +113,6 @@ File *fileCreate(unsigned char *raw, char *path)
 	byte_num += 2;
 
 	//Read in first logical cluster---------------------------------------
-	assert(byte_num == 26);
 	file->first_cluster = malloc(2 * sizeof(char));
 	for(int i = 0; i < 2; i++)
 	{
@@ -190,7 +121,6 @@ File *fileCreate(unsigned char *raw, char *path)
 	byte_num += 2;
 
 	//Read in file size---------------------------------------------------
-	assert(byte_num == 28);
 	file->size = malloc(4 * sizeof(char));
 	for(int i = 0; i < 4; i++)
 	{
@@ -209,7 +139,6 @@ File *fileCreate(unsigned char *raw, char *path)
 	return file;
 }
 
-/* Function: fileExtract   */
 //Purpose: Finds the file's contents and saves it to the user's specified directory
 void fileExtract(File *file)
 {
@@ -236,18 +165,23 @@ void fileExtract(File *file)
 	memcpy(&file_name[strlen(dest_path)+strlen(temp)+5], extension, 4);
 
 	// Open a new file for writing with the extracted file_name
-	FILE * out_file = fopen(file_name, "wb");
-	assert(out_file != NULL);
+	FILE *out_file = fopen(file_name, "wb");
+
+	if (out_file == NULL)
+	{
+		perror("Output file could not be opened");
+	}
 
 	// Move to proper index of data array to begin writing bytes to output file and extract to buffer
 	unsigned int sector_num = (u_int16_t)convertHex(file->first_cluster, 2);
-	unsigned int file_size = (u_int16_t)convertHex(file->size, 4);
-	unsigned int byte_num = (sector_num - 2) * SECTOR_SIZE;
 
 	if ((sector_num >= 0xFF0 && sector_num <= 0xFF7) || sector_num == 0)
 	{
-		goto loopskip;
+		perror("Issue with first cluster");
 	}
+
+	unsigned int file_size = (u_int16_t)convertHex(file->size, 4);
+	unsigned int byte_num = (sector_num - 2) * SECTOR_SIZE;
 
 	do
 	{
@@ -268,186 +202,80 @@ void fileExtract(File *file)
 		byte_num = (sector_num - 2) * SECTOR_SIZE;
 
 	} while (last_cluster == 0);
-
-	loopskip: // Use this for special case of bad initial logical cluster
 	
-	fclose(out_file); /* This is causing abortion in random image due to an invalid size */
+	fclose(out_file);
 	file_count++;
 }
 
-/* Function: parseDirectory */
-//Purpose: Explores a subdirectory for files contained within
-void parseDirectory(File *file)
+/* Function: filePrint     */
+//Purpose: Print formatted file information to stdout
+void filePrint(File *file)
 {
-	uint16_t clusters[16];
-	clusters[0] = (uint16_t)(convertHex(file->first_cluster, 2));
+	printf("FILE\t");
 
-	int cluster_num = 0;
-	while(cluster_num < MAX_ENTRIES)
+	if(file->not_deleted)
 	{
-		if(*(fat1[clusters[cluster_num]]) == 0x00)
+		printf("NORMAL\t");
+	}
+	else
+	{
+		printf("DELETED\t");
+	}
+
+	for(int i = 0; i < file->path_len; i++)
+	{
+		if(file->path[i] != ' ' && file->path[i] != '.')
 		{
-			break;
-		}
-		else if(*(fat1[clusters[cluster_num]]) >= LAST_MIN || *(fat1[clusters[cluster_num]]) <= LAST_MAX)
-		{
-			cluster_num++;
-			break;
-		}
-		else if(*fat1[clusters[cluster_num]] <= USE_MAX && *fat1[clusters[cluster_num]] >= USE_MIN )
-		{
-			clusters[cluster_num+1] = *(fat1[clusters[cluster_num]]);
-			cluster_num++;
+			printf("%c", file->path[i]);
 		}
 	}
 
-	int name_len = 0;
-	while(name_len < MAX_NAME)
+	int name_index = 0;
+
+	if(!file->not_deleted)
 	{
-		if(file->name[name_len] == ' ')
-		{
-			break;
-		}
-		name_len++;
+		printf("_");
+		name_index = 1;
 	}
 
-	char dir_name[name_len];
-	for(int k = 0; k < name_len; k++)
+	while(file->name[name_index] != ' ' && file->name[name_index] != '.' && name_index < MAX_NAME)
 	{
-		dir_name[k] = file->name[k];
+		printf("%c", file->name[name_index]);
+		name_index++;
 	}
-	dir_name[name_len] = '\0';
+	
+	printf(".");
 
-	char curr_path[file->path_len];
-	for(int k = 0; k < file->path_len; k++)
+	for(int i = 0; i < MAX_EXT; i++)
 	{
-		curr_path[k] = file->path[k];
+		printf("%c", file->ext[i]);
 	}
 
-	//Get new file path
-	int new_size = file->path_len + name_len + 1;
-	char *new_path = malloc(new_size);
-
-	strcpy(new_path, curr_path);
-	strcat(new_path, dir_name);
-	strcat(new_path, "/");
-
-	int count = 0;
-	while(count < cluster_num)
-	{
-		int sector_start = ((clusters[count]-2)* SECTOR_SIZE);
-		int entry_start = 64;
-		
-		while((entry_start + ENTRY_SIZE) <= SECTOR_SIZE)
-		{
-			if(data[sector_start + entry_start] != FREE)
-			{
-				unsigned char *raw_bytes = malloc(ENTRY_SIZE);
-
-				for(int x = 0; x < ENTRY_SIZE; x++)
-				{
-					raw_bytes[x] = data[sector_start + entry_start];
-					entry_start++;
-				}
-
-				File *new_file = fileCreate(raw_bytes, new_path);
-				assert(new_file != NULL);
-				free(raw_bytes);
-
-				if((convertHex(new_file->size, 4)) != 0)
-				{
-					filePrint(new_file);
-					fileExtract(new_file);
-				}
-				else
-				{
-					parseDirectory(new_file);
-				}
-			}
-			else
-			{
-				entry_start += 32;
-			}
-		}
-		count++;
-	}
+	printf("\t%d\n", convertHex(file->size, 4));
 }
 
-
-
-/* Function: parseRoot  */
-void parseRoot()
+//Purpose: Converts a unsigned char *hex in little endian to uint32_t in big endian
+uint32_t convertHex(unsigned char *hex, int bytes_num)
 {
-	assert(root != NULL);
+	uint32_t result = 0;
 
-	int count = 0;
-	while((count + ENTRY_SIZE) <= ROOT_SIZE)
+	for(int i = 0; i < bytes_num; i++)
 	{
-		if(root[count] != FREE)
-		{
-			unsigned char *raw_bytes = malloc(ENTRY_SIZE);
-
-			for(int i = 0; i <  ENTRY_SIZE; i++)
-			{
-				raw_bytes[i] = root[count];
-				count++;
-			}
-
-			char *file_path = malloc(sizeof(char));
-			file_path = "/";
-
-			File *file = fileCreate(raw_bytes, file_path);
-			assert(file != NULL);
-
-			//If file isn't a subdirectory, print and explore it
-				//else explore subdirectory
-			if((convertHex(file->size, 4)) != 0)
-			{
-				filePrint(file);
-				fileExtract(file);
-			}
-			else
-			{
-				parseDirectory(file);
-			}
-		}
-		else
-		{
-			count += 32;
-		}
+		uint32_t temp = ((uint32_t) hex[i]) << (unsigned) (8 * i);
+		result = result | temp;
 	}
+
+	return result;
 }
 
-/* Function: calcEntries     */
-//Purpose: Calculates the entry values from three bytes (specific to FAT12)
-FatEntries calcEntries(unsigned char *one, unsigned char *two, unsigned char *three)
-{
-	FatEntries e;
-	// Split the second byte up
-	uint16_t temp = (uint16_t) *two;
-	uint16_t nib_1 = (temp >> 4); //Dest: Second
-	uint16_t nib_2 = ((temp & 0x0f) << 8); //Dest: First
-
-	//Place the nibs into their respective entries
-	uint16_t first = (uint16_t) *one;
-	e.one = (nib_2 | first);
-	uint16_t third = (uint16_t) *three;
-	e.two = (nib_1 | (third << 4));
-
-	return e;
-}
-
-/* Disk Utility Functions==============================================================*/
-
-/* Function: parseData  */
 void parseData(unsigned char *disk)
 {
 	//Read the contents of the disk into the appropriate data structures
 	unsigned char fat1_raw[FAT_SIZE];
 	unsigned char fat2_raw[FAT_SIZE];
 
-	int count = 0;
-	while(count < MAX_BYTES){
+	for(int count = 0; count < MAX_BYTES; count++)
+	{
 		unsigned char curr_byte = disk[count];
 
 		if(count < SECTOR_SIZE)
@@ -470,7 +298,6 @@ void parseData(unsigned char *disk)
 		{
 			data[count-DATA_START] = curr_byte;
 		}
-		count++;
 	}
 
 	//Format the FATs correctly
@@ -508,31 +335,145 @@ void parseData(unsigned char *disk)
 	}
 }
 
-/* Function: getDisk        */
-unsigned char *getData(char *image_path)
+/* Function: parseRoot  */
+void parseRoot()
 {
-	unsigned char *data;
-	unsigned int length;
-	struct stat stat_buffer;
+	int count = 0;
+	while((count + ENTRY_SIZE) <= ROOT_SIZE)
+	{
+		if(root[count] != FREE)
+		{
+			unsigned char *raw_bytes = malloc(ENTRY_SIZE);
 
-	int fp = open(image_path, O_RDONLY);
-	//Assert file was read properly
-	assert(fp >= 0);
-	assert(fstat(fp, &stat_buffer) >= 0);
+			for(int i = 0; i <  ENTRY_SIZE; i++)
+			{
+				raw_bytes[i] = root[count];
+				count++;
+			}
 
-	length = (unsigned int) stat_buffer.st_size;
-	data = (uint8_t *) mmap(0, length, PROT_READ, MAP_FILE|MAP_PRIVATE, fp, 0);
-	assert(data != 0);
+			char *file_path = malloc(sizeof(char));
+			file_path = "/";
 
-	return data;
+			File *file = fileCreate(raw_bytes, file_path);
+
+			//If file isn't a subdirectory, print and explore it
+			//else explore subdirectory
+			if((convertHex(file->size, 4)) != 0)
+			{
+				filePrint(file);
+				fileExtract(file);
+			}
+			else
+			{
+				parseSubDir(file);
+			}
+		}
+		else
+		{
+			count += 32;
+		}
+	}
 }
 
+//Purpose: Explores a subdirectory for files contained within
+void parseSubDir(File *file)
+{
+	uint16_t clusters[MAX_ENTRIES];
+	clusters[0] = (uint16_t)(convertHex(file->first_cluster, 2));
 
-/* Main */
+	int cluster_num = 0;
+	while(cluster_num < MAX_ENTRIES)
+	{
+		if(*(fat1[clusters[cluster_num]]) == 0x00)
+		{
+			break;
+		}
+		else if(*(fat1[clusters[cluster_num]]) >= LAST_MIN || *(fat1[clusters[cluster_num]]) <= LAST_MAX)
+		{
+			cluster_num++;
+			break;
+		}
+		else if(*fat1[clusters[cluster_num]] >= USE_MIN && *fat1[clusters[cluster_num]] <= USE_MAX)
+		{
+			clusters[cluster_num+1] = *(fat1[clusters[cluster_num]]);
+			cluster_num++;
+		}
+	}
+
+	int name_len = 0;
+	while(name_len < MAX_NAME)
+	{
+		if(file->name[name_len] == ' ')
+		{
+			break;
+		}
+		name_len++;
+	}
+
+	char dir_name[name_len];
+	for(int i = 0; i < name_len; i++)
+	{
+		dir_name[i] = file->name[i];
+	}
+	dir_name[name_len] = '\0';
+
+	char curr_path[file->path_len];
+	for(int i = 0; i < file->path_len; i++)
+	{
+		curr_path[i] = file->path[i];
+	}
+
+	//Get new file path
+	char *new_path = malloc(file->path_len + name_len + 1);
+	strcpy(new_path, curr_path);
+	strcat(new_path, dir_name);
+	strcat(new_path, "/");
+
+	for(int count = 0; count < cluster_num; count++)
+	{
+		int sector_start = ((clusters[count]-2)* SECTOR_SIZE);
+		int entry_start = 64;
+		
+		while((entry_start + ENTRY_SIZE) <= SECTOR_SIZE)
+		{
+			if(data[sector_start + entry_start] != FREE)
+			{
+				unsigned char *raw_bytes = malloc(ENTRY_SIZE);
+
+				for(int x = 0; x < ENTRY_SIZE; x++)
+				{
+					raw_bytes[x] = data[sector_start + entry_start];
+					entry_start++;
+				}
+
+				File *new_file = fileCreate(raw_bytes, new_path);
+				
+				free(raw_bytes);
+
+				if((convertHex(new_file->size, 4)) != 0)
+				{
+					filePrint(new_file);
+					fileExtract(new_file);
+				}
+				else
+				{
+					parseSubDir(new_file);
+				}
+			}
+			else
+			{
+				entry_start += 32;
+			}
+		}
+	}
+}
 
 int main(int argc, char *argv[])
 {
-	assert(argc == 3);
+	if(argc != 3)
+	{
+		perror("Incorrect number of inputs given");
+	}
 
 	//Program Input Parameters
 	char *image_path = argv[1];			//Path of disk image
@@ -541,11 +482,19 @@ int main(int argc, char *argv[])
 	mkdir(dest_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
 	//Get Data
-	unsigned char *data = getData(image_path);
+	unsigned char *data;
+	unsigned int length;
+	struct stat stat_buffer;
+
+	int fp = open(image_path, O_RDONLY);
+	fstat(fp, &stat_buffer);
+
+	length = (unsigned int) stat_buffer.st_size;
+	data = (uint8_t *) mmap(0, length, PROT_READ, MAP_FILE|MAP_PRIVATE, fp, 0);
+
 	parseData(data);
 
 	parseRoot();
-
 
 	return 0;
 }

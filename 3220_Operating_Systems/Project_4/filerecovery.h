@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <assert.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <sys/types.h>
@@ -20,6 +19,7 @@
 #define ENTRY_SIZE 32
 #define MAX_PATH 256
 #define MAX_NAME 8
+#define MAX_EXT 3
 #define MAX_ENTRIES 16
 
 //File System Components
@@ -63,3 +63,13 @@ typedef struct File {
     int not_deleted;
 } File;
 
+FatEntries calcEntries(unsigned char *one, unsigned char *two, unsigned char *three);
+
+File *fileCreate(unsigned char *raw, char *path);
+void fileExtract(File *file);
+void filePrint(File *file);
+
+uint32_t convertHex(unsigned char *hex, int bytes_num);
+
+void parseRoot();
+void parseSubDir(File *file);
