@@ -8,30 +8,29 @@ unsigned char root[ROOT_SIZE];
 unsigned char data[DATA_SIZE];
 
 char *dest_path;
-int fileNumber = 0;
-
+int file_count = 0;
 
 /* Helper Functions======================================================================*/
 
-/* Function: getSector      */
-// uint16_t getSectorIndex(uint16_t fatEntry){
-// 	return (uint16_t)(fatEntry - 2);
-// }
-
 /* Function: convertHex */
 //Purpose: Converts a unsigned char *hex in little endian to uint32_t in big endian
-uint32_t convertHex(unsigned char *hex, int numBytes){
+uint32_t convertHex(unsigned char *hex, int numBytes)
+{
 	uint32_t result = 0;
-	for(int i = 0; i < numBytes; i++){
+
+	for(int i = 0; i < numBytes; i++)
+	{
 		uint32_t temp = ((uint32_t) hex[i]) << (unsigned) (8 * i);
 		result = result | temp;
 	}
+
 	return result;
 }
 
 /* Function: filePrint     */
 //Purpose: Print formatted file information to stdout
-void filePrint(File *file){
+void filePrint(File *file)
+{
 	assert(file != NULL);
 	printf("FILE\t");
 
@@ -87,113 +86,128 @@ void filePrint(File *file){
 }
 
 /*	Exploration Functions==================================================================*/
-	/* Function: fileCreate    */
-		File *fileCreate(unsigned char *raw, char *filepath){
-			File *nextFile = malloc(sizeof(File));
-			int currentInd = 0;
+/* Function: fileCreate    */
+File *fileCreate(unsigned char *raw, char *path)
+{
+	File *file = malloc(sizeof(File));
+	int byte_num = 0;
 
-			//Check if the file is valid
-			if(0xE5 != raw[currentInd]){
-				nextFile->not_deleted = 1;
-			} else {
-				nextFile->not_deleted = 0;
-			}
+	//Check if the file is deleted
+	if(0xE5 != raw[byte_num])
+	{
+		file->not_deleted = 1;
+	}
+	else
+	{
+		file->not_deleted = 0;
+	}
 
-			//Read in name-------------------------------------------------
-			assert(currentInd == 0);
-			nextFile->name = (unsigned char *)malloc(8 * sizeof(char));
-			for(int i = 0; i < 8; i++){
-				nextFile->name[i] = raw[currentInd+i];
-			}
-			currentInd += 8;
+	//Read in name-------------------------------------------------
+	assert(byte_num == 0);
+	file->name = malloc(8 * sizeof(char));
+	for(int i = 0; i < 8; i++)
+	{
+		file->name[i] = raw[byte_num+i];
+	}
+	byte_num += 8;
 
-			//Read in extension-------------------------------------------------
-			assert(currentInd == 8);
-			nextFile->ext = (unsigned char *)malloc(3 * sizeof(char));
-			for(int i = 0; i < 3; i++){
-				nextFile->ext[i] = raw[currentInd+i];
-			}
-			currentInd += 3;
+	//Read in extension-------------------------------------------------
+	assert(byte_num == 8);
+	file->ext = malloc(3 * sizeof(char));
+	for(int i = 0; i < 3; i++)
+	{
+		file->ext[i] = raw[byte_num+i];
+	}
+	byte_num += 3;
 
-			//Read in attributes------------------------------------------------
-			assert(currentInd == 11);
-			nextFile->attributes = (unsigned char *)malloc(1 * sizeof(char));
-			nextFile->attributes[0] = raw[currentInd];
-			currentInd++;
+	//Read in attributes------------------------------------------------
+	assert(byte_num == 11);
+	file->attributes = malloc(sizeof(char));
+	file->attributes[0] = raw[byte_num];
+	byte_num++;
 
-			//Read in reserved--------------------------------------------------
-			assert(currentInd == 12);
-			nextFile->reserved = (unsigned char *)malloc(2 * sizeof(char));
-			for(int i = 0; i < 2; i++){
-				nextFile->reserved[i] = raw[currentInd+i];
-			}
-			currentInd += 2;
+	//Read in reserved--------------------------------------------------
+	assert(byte_num == 12);
+	file->reserved = malloc(2 * sizeof(char));
+	for(int i = 0; i < 2; i++)
+	{
+		file->reserved[i] = raw[byte_num+i];
+	}
+	byte_num += 2;
 
-			//Read in creation_time-----------------------------------------------
-			assert(currentInd  == 14);
-			nextFile->creation_time = (unsigned char *)malloc(2 * sizeof(char));
-			for(int i = 0; i < 2; i++){
-				nextFile->creation_time[i] = raw[currentInd+i];
-			}
-			currentInd += 2;
+	//Read in creation_time-----------------------------------------------
+	assert(byte_num  == 14);
+	file->creation_time = malloc(2 * sizeof(char));
+	for(int i = 0; i < 2; i++)
+	{
+		file->creation_time[i] = raw[byte_num+i];
+	}
+	byte_num += 2;
 
-			//Read in creation_date-----------------------------------------------
-			assert(currentInd == 16);
-			nextFile->creation_date = (unsigned char *)malloc(2 * sizeof(char));
-			for(int i = 0; i < 2; i++){
-				nextFile->creation_date[i] = raw[currentInd+i];
-			}
-			currentInd += 2;
+	//Read in creation_date-----------------------------------------------
+	assert(byte_num == 16);
+	file->creation_date = malloc(2 * sizeof(char));
+	for(int i = 0; i < 2; i++)
+	{
+		file->creation_date[i] = raw[byte_num+i];
+	}
+	byte_num += 2;
 
-			//Read in last_access info------------------------------------------
-			assert(currentInd == 18);
-			nextFile->last_access = (unsigned char *)malloc(2 * sizeof(char));
-			for(int i = 0; i < 2; i++){
-				nextFile->last_access[i] = raw[currentInd+i];
-			}
-			currentInd += 4;
+	//Read in last_access info------------------------------------------
+	assert(byte_num == 18);
+	file->last_access = malloc(2 * sizeof(char));
+	for(int i = 0; i < 2; i++)
+	{
+		file->last_access[i] = raw[byte_num+i];
+	}
+	byte_num += 4;
 
-			//Read in lastModified Time------------------------------------------
-			assert(currentInd == 22);
-			nextFile->last_mod_time = (unsigned char *)malloc(2 * sizeof(char));
-			for(int i = 0; i < 2; i++){
-				nextFile->last_mod_time[i] = raw[currentInd+i];
-			}
-			currentInd += 2;
+	//Read in lastModified Time------------------------------------------
+	assert(byte_num == 22);
+	file->last_mod_time = malloc(2 * sizeof(char));
+	for(int i = 0; i < 2; i++)
+	{
+		file->last_mod_time[i] = raw[byte_num+i];
+	}
+	byte_num += 2;
 
-			//Read in lastModified Date-------------------------------------------
-			assert(currentInd  == 24);
-			nextFile->last_mod_date = (unsigned char *)malloc(2 * sizeof(char));
-			for(int i = 0; i < 2; i++){
-				nextFile->last_mod_date[i] = raw[currentInd+i];
-			}
-			currentInd += 2;
+	//Read in lastModified Date-------------------------------------------
+	assert(byte_num  == 24);
+	file->last_mod_date = malloc(2 * sizeof(char));
+	for(int i = 0; i < 2; i++)
+	{
+		file->last_mod_date[i] = raw[byte_num+i];
+	}
+	byte_num += 2;
 
-			//Read in first logical cluster---------------------------------------
-			assert(currentInd == 26);
-			nextFile->first_cluster = (unsigned char *)malloc(2 * sizeof(char));
-			for(int i = 0; i < 2; i++){
-				nextFile->first_cluster[i] = raw[currentInd+i];
-			}
-			currentInd += 2;
+	//Read in first logical cluster---------------------------------------
+	assert(byte_num == 26);
+	file->first_cluster = malloc(2 * sizeof(char));
+	for(int i = 0; i < 2; i++)
+	{
+		file->first_cluster[i] = raw[byte_num+i];
+	}
+	byte_num += 2;
 
-			//Read in file size---------------------------------------------------
-			assert(currentInd == 28);
-			nextFile->size = (unsigned char *)malloc(4 * sizeof(char));
-			for(int i = 0; i < 4; i++){
-				nextFile->size[i] = raw[currentInd+i];
-			}
-			currentInd += 4;
+	//Read in file size---------------------------------------------------
+	assert(byte_num == 28);
+	file->size = malloc(4 * sizeof(char));
+	for(int i = 0; i < 4; i++)
+	{
+		file->size[i] = raw[byte_num+i];
+	}
+	byte_num += 4;
 
-			nextFile->path_len = strlen(filepath);
+	file->path_len = strlen(path);
 
-			nextFile->path = (char *) malloc(nextFile->path_len);
-			for(int i = 0; i < nextFile->path_len; i++){
-				nextFile->path[i] = filepath[i];
-			}
+	file->path = (char *) malloc(file->path_len);
+	for(int i = 0; i < file->path_len; i++)
+	{
+		file->path[i] = path[i];
+	}
 
-			return nextFile;
-		}
+	return file;
+}
 
 /* Function: fileExtract   */
 //Purpose: Finds the file's contents and saves it to the user's specified directory
@@ -203,12 +217,12 @@ void fileExtract(File *file)
 	char file_name[MAX_PATH];
 	char temp[8];
 	char extension[4];
-	unsigned int lastSectorFlag = 0;  // Flag for indicating if we are in the last sector of the file, set to 1 for yes
-	unsigned int sectorIndex, bytesWritten = 0;
+	unsigned int last_cluster = 0;  // Flag for indicating if we are in the last sector of the file, set to 1 for yes
+	unsigned int write_count = 0;
 
 	// Give path for file_name, and extract extension
 	strcpy(file_name, dest_path);
-	sprintf(temp, "%d.", fileNumber);
+	sprintf(temp, "%d.", file_count);
 	memcpy(&file_name[strlen(dest_path)], "/file", 5);
 	memcpy(&file_name[strlen(dest_path)+5], temp, strlen(temp));
 
@@ -222,62 +236,43 @@ void fileExtract(File *file)
 	memcpy(&file_name[strlen(dest_path)+strlen(temp)+5], extension, 4);
 
 	// Open a new file for writing with the extracted file_name
-	FILE * outputFile = fopen(file_name, "wb");
-	assert(outputFile != NULL);
-
-	union {
-		char tempNum[16];
-			unsigned int ui;
-	} u;
-
-	union {
-		char tempNum2[16];
-			unsigned int filesize;
-	} u2;
-
-	strncpy(u.tempNum, (char *)file->first_cluster, 2);
-	for (i=2; i<=16; i++)
-	{
-		u.tempNum[i] = '\0';
-	}
-	
-	strncpy(u2.tempNum2, (char *)file->size, 4);
-	for (i=4; i<=16; i++)
-	{
-		u2.tempNum2[i] = '\0';
-	}
+	FILE * out_file = fopen(file_name, "wb");
+	assert(out_file != NULL);
 
 	// Move to proper index of data array to begin writing bytes to output file and extract to buffer
-	sectorIndex = u.ui;
-	unsigned int dataIndex = (sectorIndex - 2) * SECTOR_SIZE;
-	if ((sectorIndex >= 0xFF0 && sectorIndex <= 0xFF7) || sectorIndex == 0)
+	unsigned int sector_num = (u_int16_t)convertHex(file->first_cluster, 2);
+	unsigned int file_size = (u_int16_t)convertHex(file->size, 4);
+	unsigned int byte_num = (sector_num - 2) * SECTOR_SIZE;
+
+	if ((sector_num >= 0xFF0 && sector_num <= 0xFF7) || sector_num == 0)
 	{
 		goto loopskip;
 	}
 
-	do {
+	do
+	{
 		i = 0;
-		while (i < SECTOR_SIZE && bytesWritten < u2.filesize)
+		while (i < SECTOR_SIZE && write_count < file_size)
 		{
-			fprintf(outputFile, "%c", data[dataIndex + i]);
-			i++; bytesWritten++;
+			fprintf(out_file, "%c", data[byte_num + i]);
+			i++; write_count++;
 		}
 
 		// Find the next sector from the FAT
-		if (*fat1[sectorIndex] >= 0xFF0 || *fat1[sectorIndex] == 0x0)
+		if (*fat1[sector_num] >= 0xFF0 || *fat1[sector_num] == 0x0)
 		{
-			lastSectorFlag = 1;
+			last_cluster = 1;
 		}
 
-		sectorIndex = *fat1[sectorIndex];
-		dataIndex = (sectorIndex - 2) * SECTOR_SIZE;
+		sector_num = *fat1[sector_num];
+		byte_num = (sector_num - 2) * SECTOR_SIZE;
 
-	} while (lastSectorFlag == 0);
+	} while (last_cluster == 0);
 
 	loopskip: // Use this for special case of bad initial logical cluster
 	
-	fclose(outputFile); /* This is causing abortion in random image due to an invalid size */
-	fileNumber++;
+	fclose(out_file); /* This is causing abortion in random image due to an invalid size */
+	file_count++;
 }
 
 /* Function: parseDirectory */
@@ -329,7 +324,7 @@ void parseDirectory(File *file)
 		curr_path[k] = file->path[k];
 	}
 
-	//Get new filepath
+	//Get new file path
 	int new_size = file->path_len + name_len + 1;
 	char *new_path = malloc(new_size);
 
