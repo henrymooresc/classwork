@@ -1,0 +1,27 @@
+1. first_duplicate [list]
+
+    # first_duplicate [1;2;3;4;5;6;7;4;5;8;9];;
+    - : int = 4
+    # first_duplicate [1;2;3;4;5;6;7;8;9;10];;
+    - : int = -1000
+
+2. first_nonrepeating [list]
+
+    # first_nonrepeating [1;2;3;2;7;5;6;1;3];;
+    - : int = 7
+    # first_nonrepeating [1;2;3;4;5;1;2;3;4;5];;
+    - : int = -1000
+
+3. sumOfTwo ([list1],[list2],sum)
+
+    # sumOfTwo ([1;2;3],[10;20;30;40],42);;
+    - : bool = true
+    # sumOfTwo ([1;2;3],[10;20;30;40],44);;
+    - : bool = false
+
+4. cyk_sublists num
+
+    # cyk_sublists 4;;
+    - : (int * int) list = [(1, 3); (2, 2); (3, 1)]
+    # cyk_sublists 1;;
+    - : (int * int) list = []
