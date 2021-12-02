@@ -1,0 +1,122 @@
+startshape TETRISFONT
+
+shape TETRISFONT
+{
+    font_A[]
+    font_B[x 8]
+    font_F[x 12]
+    font_R[x 19]
+    font_X[x 26]
+}
+
+shape font_A
+{
+    J[]
+    L[x 2]
+    Z[x 2 y 1 r 270]
+    T[y 2 r 90]
+    I[x 3 y 2]
+    O[x 2 y 4]
+    S[x 1 y 5]
+}
+
+shape font_B
+{
+    J[y -2 r 270]
+    Z[x 2 y -1 r 270]
+    I[x -1 y 1 r 90]
+    O[x -3 y 1]
+    L[x -2 y 2 r 180]
+    S[x 1 y 3 r 270]
+    T[x -1 y 5]
+}
+
+shape font_F
+{
+    O[y -1]
+    J[x 2 r 270]
+    T[x 1 y 2 r 270]
+    L[x 4 y 2 r 270]
+    S[y 4 r 270]
+    Z[x 1 y 5]
+    I[x 2 y 5 r 90]
+}
+
+shape font_R
+{
+    I[y 1]
+    S[x 4 y -1 r 270]
+    L[x 4 y 1 r 270]
+    T[x 1 y 2 r 270]
+    O[x 3 y 3]
+    Z[x 1 y 4 r 270]
+    J[x 2 y 5 r 90]
+}
+
+shape font_X
+{
+    S[y -1]
+    O[x 4 y -1]
+    T[x 3 r 90]
+    I[x 1 y 3]
+    Z[x 3 y 2 r 270]
+    J[x 1 y 4 r 270]
+    L[x 3 y 4 r 90]
+    
+}
+
+shape I
+{
+    SQUARE[hue 170 sat 1 b 1]
+    SQUARE[y -1 hue 170 sat 1 b 1]
+    SQUARE[y -2 hue 170 sat 1 b 1]
+    SQUARE[y -3 hue 170 sat 1 b 1]
+}
+
+shape J
+{
+    SQUARE[hue 230 sat 1 b 1]
+    SQUARE[y -1 hue 230 sat 1 b 1]
+    SQUARE[y -2 hue 230 sat 1 b 1]
+    SQUARE[x -1 y -2 hue 230 sat 1 b 1]
+}
+
+shape L
+{
+    SQUARE[hue 25 sat 1 b 1]
+    SQUARE[y -1 hue 25 sat 1 b 1]
+    SQUARE[y -2 hue 25 sat 1 b 1]
+    SQUARE[x 1 y -2 hue 25 sat 1 b 1]
+}
+
+shape O
+{
+    SQUARE[hue 65 sat 1 b 1]
+    SQUARE[x 1 hue 65 sat 1 b 1]
+    SQUARE[x 1y -1 hue 65 sat 1 b 1]
+    SQUARE[y -1 hue 65 sat 1 b 1]
+}
+
+shape S
+{
+    SQUARE[hue 120 sat 1 b 1]
+    SQUARE[y -1 hue 120 sat 1 b 1]
+    SQUARE[x -1 y -1 hue 120 sat 1 b 1]
+    SQUARE[x 1 hue 120 sat 1 b 1]
+}
+
+shape T
+{
+    SQUARE[hue 270 sat 1 b 1]
+    SQUARE[y -1 hue 270 sat 1 b 1]
+    SQUARE[x -1 hue 270 sat 1 b 1]
+    SQUARE[x 1 hue 270 sat 1 b 1]
+}
+
+shape Z
+{
+    SQUARE[hue 350 sat 1 b 1]
+    SQUARE[y -1 hue 350 sat 1 b 1]
+    SQUARE[x -1 hue 350 sat 1 b 1]
+    SQUARE[x 1 y -1 hue 350 sat 1 b 1]
+}

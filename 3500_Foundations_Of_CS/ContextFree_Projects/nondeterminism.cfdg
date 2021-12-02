@@ -1,0 +1,75 @@
+startshape Drawing
+
+path spiral
+{
+    MOVETO (0, 0)
+    
+    LINETO (1, 0)
+    STROKE (.1) [hue 35 sat 0.8 b 0.9]
+    
+    LINETO (1, 2)
+    STROKE (.1) [hue 85 sat 0.8 b 0.9]
+    
+    LINETO (-2, 2)
+    STROKE (.1) [hue 135 sat 0.8 b 0.9]
+    
+    LINETO (-2, -2)
+    STROKE (.1) [hue 185 sat 0.8 b 0.9]
+    
+    LINETO (3, -2)
+    STROKE (.1) [hue 235 sat 0.8 b 0.9]
+    
+    LINETO (3, 4)
+    STROKE (.1) [hue 285 sat 0.8 b 0.9]
+    
+    LINETO (-4, 4)
+    STROKE (.1) [hue 335 sat 0.8 b 0.9]
+}
+
+path handdrawnstar
+{
+    MOVETO (0, 0)
+    
+    LINETO (1.2, 3.1)
+    STROKE (.1) [hue 35 sat 0.8 b 0.9]
+    
+    LINETO (2.6, -0.6)
+    STROKE (.1) [hue 85 sat 0.8 b 0.9]
+    
+    LINETO (-1, 2)
+    STROKE (.1) [hue 135 sat 0.8 b 0.9]
+    
+    LINETO (3.2, 2.1)
+    STROKE (.1) [hue 185 sat 0.8 b 0.9]
+    
+    LINETO (0, 0)
+    STROKE (.1) [hue 235 sat 0.8 b 0.9]
+}
+
+path spiralOfFibonacci
+{
+    MOVETO (0, 0)
+    
+    LINETO (1, 1)
+    STROKE (.1) [hue 35 sat 0.8 b 0.9]
+    
+    LINETO (-1, 2)
+    STROKE (.1) [hue 85 sat 0.8 b 0.9]
+    
+    LINETO (-3, -1)
+    STROKE (.1) [hue 135 sat 0.8 b 0.9]
+    
+    LINETO (2, -4)
+    STROKE (.1) [hue 185 sat 0.8 b 0.9]
+    
+    LINETO (7, 4)
+    STROKE (.1) [hue 235 sat 0.8 b 0.9]
+    
+    LINETO (-6, 12)
+    STROKE (.1) [hue 285 sat 0.8 b 0.9]
+}
+
+shape Drawing
+    rule 3.34 { spiral [] }
+    rule 3.33 { handdrawnstar [] }
+    rule 3.33 { spiralOfFibonacci [] }
