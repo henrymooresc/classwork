@@ -1,0 +1,79 @@
+(**
+Prototype:
+    first_duplicate of a list returns -10000 if there are no duplicates 
+    in the integer list argument. Otherwise the first item that occurs 
+    more than once (duplicate) in the integer list is returned.
+ 
+Signature:
+    val first_duplicate : int list -> int = <fun>
+*)
+
+let rec r_duplicate = function
+    | ([])  -> -1000
+    | (list)-> if List.mem (List.hd list) (List.tl list) then List.hd list
+               else r_duplicate (List.tl list);;
+
+let first_duplicate = function
+    | ([])  -> -1000
+    | (list)-> r_duplicate (list);;
+
+(**
+Prototype:
+    first_nonrepeating of a list returns -10000 if there are 
+    no non-repeated (non-duplicated) element in the list. Otherwise it 
+    returns the first non-repeating element in the integer list.
+
+Signature:
+    val first_nonrepeating : int list -> int = <fun> 
+*)
+
+let rec r_nonrepeating = function
+    | (_, [])       -> -1000
+    | (check, list) -> if List.mem (List.hd list) check || List.mem (List.hd list) (List.tl list) then r_nonrepeating (check @ [List.hd list], List.tl list)
+                       else List.hd list;;
+
+let first_nonrepeating = function
+    | ([])  -> -1000
+    | (list)-> r_nonrepeating ([], list);;
+
+(**
+Prototype:
+    sumOfTwo(a,b,v) returns false if there does not exdist 
+    and integer in a, which added to any integer in b, equals v.  If 
+    there is an integer in a, and an integer in b that sum to v, return 
+    true.
+
+Signature:
+    val sumOfTwo : int list * int list * int -> bool = <fun>
+*)
+
+let rec r_sum_helper = function
+    | (_, [], _)    -> false
+    | (n, list, sum)-> if (n + List.hd list) = sum then true
+                       else r_sum_helper (n, List.tl list, sum);;
+
+let rec r_list_helper = function
+    | (_, [], _)            -> false
+    | ([], _, _)            -> false
+    | (listA, listB, sum)   -> if r_sum_helper(List.hd listA, listB, sum) then true
+                               else r_list_helper(List.tl listA, listB, sum);;
+
+let sumOfTwo = function
+    | (listA, listB, sum)   -> r_list_helper(listA, listB, sum);;
+
+(**
+Prototpe:
+    cyk_sublists n returns all of the positive integer pairs
+    x and y that add up to n.  Pairs are returned as tuples.
+    Argument n must be larger than 1, otherwise return []
+ 
+Signature:  
+    val cyk_sublists : int -> (int * int) list = <fun>
+*)
+let rec r_cyk = function
+    | (list, x, n) -> if (x + 1) = n then (list @ [(x, n - x)])
+                      else r_cyk((list @ [(x, n - x)]), x + 1, n);;
+
+let cyk_sublists = function
+    | (n) -> if n < 2 then []
+             else r_cyk ([], 1, n);;
