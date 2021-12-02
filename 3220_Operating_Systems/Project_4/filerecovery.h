@@ -1,16 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-#include <sys/types.h>
 #include <string.h>
 #include <fcntl.h>
-#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
 
-/* FAT12 Constants */
-//Size Constants 
-//Memory (in Bytes)
+// Various sizes in bytes
 #define SECTOR_SIZE 512
 #define FAT_SIZE 4608
 #define ROOT_SIZE 7168
@@ -22,30 +18,29 @@
 #define MAX_EXT 3
 #define MAX_ENTRIES 16
 
-//File System Components
-#define FAT_ENTRIES 3072
-
-//Location Constants
+// Sector starting bytes
 #define DATA_START 16896
 #define FAT2_START 5120
 #define ROOT_START 9728
 
-//Fat Entries
+// Num of entries possible in FAT
+#define FAT_ENTRIES 3072
+
+// Common FAT entries
 #define FREE 0x000
 #define USE_MIN 0x002
 #define USE_MAX 0xfef
 #define RESERVED_MIN 0xff0
 #define RESERVED_MAX 0xff6
 #define BAD 0xff7
-#define LAST_MIN 0xff8
-#define LAST_MAX 0xfff
 
-/* Struct to hold two entries */
+// Struct used to store two 12 bit FAT entries
 typedef struct FatEntries{
     uint16_t one;
     uint16_t two;
 } FatEntries;
 
+// Struct used to store file entry information
 typedef struct File {
     unsigned char *name;
     unsigned char *ext;
@@ -64,12 +59,9 @@ typedef struct File {
 } File;
 
 FatEntries calcEntries(unsigned char *one, unsigned char *two, unsigned char *three);
-
 File *fileCreate(unsigned char *raw, char *path);
 void fileExtract(File *file);
 void filePrint(File *file);
-
 uint32_t convertHex(unsigned char *hex, int bytes_num);
-
 void parseRoot();
 void parseSubDir(File *file);

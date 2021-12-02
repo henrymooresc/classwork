@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "filerecovery.h": "c"
+        "filerecovery.h": "c",
+        "stdlib.h": "c"
     }
 }

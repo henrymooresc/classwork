@@ -1,0 +1,16 @@
+3220 - Project 4
+Henry Moore
+
+# Design
+    This is my FAT12 file recovery program. It consists of filerecovery.c, filerecovery.h, and a Makefile.
+    The program works by reading in the bytes on the given image, separating them into the various FAT12 
+    sectors, and parsing the sectors looking for files. Any found file is saved to the given output. 
+    Starting in the ROOT, every entry is checked. If the entry is file the data is printed to stdout, 
+    assigned to a File struct object, and saved to the specified output. If the entry is a subdirectory, 
+    its entries are then parsed until an end is reached.
+
+# Known Problems
+    I had a hard time figuring out how to deal with if a subdirectory had more than 16 entries. I think I 
+    was able to address this problem but I have not had time to test it so I don't really know.
+
+    Also some of my type casting was causing errors, especially with the convertHex helper function.
