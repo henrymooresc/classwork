@@ -77,3 +77,12 @@ let rec r_cyk = function
 let cyk_sublists = function
     | (n) -> if n < 2 then []
              else r_cyk ([], 1, n);;
+
+first_duplicate [1;2;3;4;5;6;7;4;5;8;9];;
+first_duplicate [1;2;3;4;5;6;7;8;9;10];;
+first_nonrepeating [1;2;3;2;7;5;6;1;3];;
+first_nonrepeating [1;2;3;4;5;1;2;3;4;5];;
+sumOfTwo ([1;2;3],[10;20;30;40],42);;
+sumOfTwo ([1;2;3],[10;20;30;40],44);;
+cyk_sublists 4;;
+cyk_sublists 1;;
