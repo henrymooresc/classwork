@@ -28,8 +28,8 @@ public class TextCpuView implements ICpuView {
 	//TESTING
 	public static void main(String[] args) {
 		// OPTIONAL TODO: Update constructors and initialization as needed -- only for testing
-		InstructionMemoryModel im   = new InstructionMemoryModel();
-		DataMemoryModel        dm   = new DataMemoryModel();
+		InstructionMemoryModel im   = new InstructionMemoryModel("input.asm");
+		//DataMemoryModel        dm   = new DataMemoryModel();
 		RegistersModel         regs = new RegistersModel();
 
 		TextCpuView v = new TextCpuView();

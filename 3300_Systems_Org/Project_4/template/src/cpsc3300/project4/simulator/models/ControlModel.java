@@ -16,6 +16,46 @@ public class ControlModel {
 	public ControlModel(byte opcode) {
 		// TODO: Switch on OpCode to set controls for the private variables for each kind of instruction
 		switch (opcode) {
+			case 0:
+				regDst = true;
+				aluSrc = false;
+				memToReg = false;
+				regWrite = true;
+				memRead = false;
+				memWrite = false;
+				branch = false;
+				aluOp = 0x2;
+				break;
+			case 4:
+				regDst = false;
+				aluSrc = false;
+				memToReg = false;
+				regWrite = false;
+				memRead = false;
+				memWrite = false;
+				branch = true;
+				aluOp = 0x1;
+				break;
+			case 35:
+				regDst = false;
+				aluSrc = true;
+				memToReg = true;
+				regWrite = true;
+				memRead = true;
+				memWrite = false;
+				branch = false;
+				aluOp = 0x0;
+				break;
+			case 43:
+				regDst = false;
+				aluSrc = true;
+				memToReg = false;
+				regWrite = false;
+				memRead = false;
+				memWrite = true;
+				branch = false;
+				aluOp = 0x0;
+				break;
 			default:
 				regDst = false;
 				aluSrc = false;
