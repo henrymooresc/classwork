@@ -12,4 +12,3 @@ runSimulator: compileSimulator
 
 clean :
 	find src/ -name "*.class" -type f -delete
-	rm -f src/output.bin

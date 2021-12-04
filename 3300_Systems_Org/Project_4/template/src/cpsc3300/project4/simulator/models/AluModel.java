@@ -10,18 +10,24 @@ public class AluModel {
 	public int calculate(int data1, int data2, int operation) {
 		// TODO: Return the result of ALU operation based on operation
 		if (operation == 2) {
-			return data1 + data2;
+			result = data1 + data2;
+			return result;
 		} else if (operation == 6) {
-			return data1 - data2;
+			result = data1 - data2;
+			return result;
 		} else if (operation == 0) {
-			return data1 & data2;
+			result = data1 & data2;
+			return result;
 		} else if (operation == 1) {
-			return data1 | data2;
+			result = data1 | data2;
+			return result;
 		} else {
 			if (data1 < data2) {
-				return 1;
+				result = 1;
+				return result;
 			} else {
-				return 0;
+				result = 0;
+				return result;
 			}
 		}
 	}

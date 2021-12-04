@@ -46,6 +46,6 @@ public class InstructionMemoryModel {
 	}
 
 	public int getMaxAddress(){
-		return instructions.size() * 4;
+		return (instructions.size()) * 4;
 	}
 }

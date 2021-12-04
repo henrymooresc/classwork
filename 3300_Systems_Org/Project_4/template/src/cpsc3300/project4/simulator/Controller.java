@@ -36,6 +36,7 @@ public class Controller {
 
 		// keeps running until out of instructions
 		while (pc < IM.getMaxAddress()) {
+
 			view.updateView(IM, DM, regs, pc);
 			singleStep();
 
@@ -44,6 +45,7 @@ public class Controller {
 			} catch (InterruptedException e) {
 				System.out.println("Error pausing between instructions");
 			}
+			if (pc > IM.getMaxAddress()) break;
 		}
 		// display the final state of the CPU
 		view.updateView(IM, DM, regs, pc);
@@ -59,6 +61,7 @@ public class Controller {
 		while ((c = s.nextLine()) != ""){
 			view.updateView(IM, DM, regs, pc);
 			singleStep();
+			
 			if (pc > IM.getMaxAddress()) break;
 		}
 	}
@@ -74,24 +77,39 @@ public class Controller {
 		// prepare ALU inputs
 		byte operation = alu.getOperation(instr);
 		int  data1     = regs.readRegister(instr.getRs());
+
+		//System.out.println("Instr: " + instr.decode());
+
 		// select input based on control signal
-		// TODO: Use Mux to select correct input based on control signal
-		int data2 = MuxModel.mux(...);
+		int data2 = MuxModel.mux(control.isAluSrc(), instr.getExtendedAddress(), regs.readRegister(instr.getRt()));
+
 		int result = alu.calculate(data1, data2, operation);
 
 		// memory reads and writes
 		int memVal = 0;
-		// TODO: Perform memory writes or reads as needed
-		// TODO: Prepare writeback to register as needed
-		int output = MuxModel.mux(...);
+
+		if (control.isMemRead()) {
+			memVal = DM.readData(result);
+		} else if (control.isMemWrite()) {
+			memVal = regs.readRegister(instr.getRt());
+			DM.writeData(result, memVal);
+			
+		}
+
+		int output = MuxModel.mux(control.isMemToReg(), memVal, result);
 
 		if (control.isRegWrite()) {
-			// TODO: Identify register to write to
-			byte reg = MuxModel.mux(...);
+			byte reg = MuxModel.mux(control.isRegDst(), instr.getRd(), instr.getRt());
+
 			regs.writeRegister(reg, output);
 		}
+
 		// update pc to next instruction
 		this.pc += 4;
-		// TODO: Add branch control for beq instruction
+
+		if (control.isBranch() && result == 0) {
+			int new_addr = instr.getExtendedAddress() << 2;
+			this.pc += new_addr;
+		}
 	}
 }
