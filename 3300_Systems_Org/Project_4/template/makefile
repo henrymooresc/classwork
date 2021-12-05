@@ -1,3 +1,4 @@
+all: compile run
 
 run: runSimulator
 

@@ -12,7 +12,6 @@ public class Instruction {
 
 	public Instruction(int instr) {
 		this.instr = instr;
-		// TODO: Set opcode, rs, rt, and tail based on binary data in instr
 		this.opcode = (byte) (instr >>> 26);
 		this.rs = (byte) ((instr >>> 21) & 31);
 		this.rt = (byte) ((instr >>> 16) & 31);
@@ -44,28 +43,23 @@ public class Instruction {
 	}
 
 	public byte getRd() {
-		// TODO: Isolate Rd value from instruction
 		return (byte) ((tail >>> 11) & 31);
 	}
 
 	public byte getShamt() {
-		// TODO: Isolate Shamt value from instruction
 		return (byte) ((tail >>> 6) & 31);
 	}
 
 	public byte getFunct() {
-		// TODO: Isolate Funct value from instruction
 		return (byte) (tail & 63);
 	}
 
 	public int getJumpAddress() {
-		// TODO: Isolate address value from jump instruction
 		return (instr & 67108863);
 	}
 
 	public int getAluOp() {
 		switch (opcode) {
-			// TODO: Make cases for various types based on opcode, returning the appropriate ALU Op
 			case 0:
 				return 2;
 			case 4:
@@ -120,7 +114,7 @@ public class Instruction {
 			instr_s.append(rd + ", " + rs + ", " + rt);
 		}
 
-		return instr_s.toString(); //TODO convert instruction back to assembly code
+		return instr_s.toString();
 	}
 
 	@Override

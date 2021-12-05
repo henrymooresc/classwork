@@ -14,7 +14,6 @@ public class ControlModel {
 	private boolean regWrite;
 
 	public ControlModel(byte opcode) {
-		// TODO: Switch on OpCode to set controls for the private variables for each kind of instruction
 		switch (opcode) {
 			case 0:
 				regDst = true;

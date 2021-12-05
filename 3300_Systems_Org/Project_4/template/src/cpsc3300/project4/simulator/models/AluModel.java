@@ -8,7 +8,6 @@ public class AluModel {
 	private int result;
 
 	public int calculate(int data1, int data2, int operation) {
-		// TODO: Return the result of ALU operation based on operation
 		if (operation == 2) {
 			result = data1 + data2;
 			return result;
@@ -33,7 +32,6 @@ public class AluModel {
 	}
 
 	public static byte getOperation(byte funct, int AluOp) {
-		// TODO: Return ALU operation based on function and OpCode
 		if (AluOp == 0) {
 			return 2;
 		} else if (AluOp == 1) {

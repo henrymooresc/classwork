@@ -59,25 +59,15 @@ public class TextCpuView implements ICpuView {
 		}
 
 		System.out.print("\n=============================================\n");
-
 		System.out.println("\tAddress\t| Data");
 		System.out.println("=============================================");
 		for (int i = 0; i <= DM.getMaxAddress(); i+=4) {
 			System.out.println("\t0x" + Integer.toHexString(i) + "\t| " + DM.readData(i));
 		}
 
-		// TODO: Display logic block statistics
-		/* You should track # cycles for a given program.
-		   Also, you should track ALU arithmetic operations (how many add, sub, etc ops).
-		   Note: Some instructions besides "add" use add. example is beq; this counts as an ALU arithmetic op, incrementing the PC does not.
-		   You should track # of memory reads/writes too.
-		   The control should track the # of each individual instruction. */
 		System.out.println("\n=============================================");
 		System.out.println("\tLogic Block Stats");
 		System.out.println("=============================================");
-
-		
-
 		System.out.println("Cycles: " + cycles + "\t| MemReads: " + memR + "\t| Memwrites: " + memW);
 		System.out.println("ADDs: " + adds + "\t\t| SUBs: " + subs + "\t| SLTs: " + slts);
 		System.out.println("ANDs: " + ands + "\t\t| ORs: " + ors);

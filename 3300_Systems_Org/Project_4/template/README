@@ -1,0 +1,12 @@
+CPSC 3300
+Henry Moore
+Project 4
+
+# Description
+This project is the implementation of a CPU simulator using MIPS instruction architecture.
+It was made using Java and following the MVC design practice. A makefile is used for compiling
+and running the program.
+
+# Issues
+I believe the given .bin file given as a translation of "input.asm" was incorrect. It appeared 
+to have issues with the beq and sw statements.

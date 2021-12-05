@@ -78,8 +78,6 @@ public class Controller {
 		byte operation = alu.getOperation(instr);
 		int  data1     = regs.readRegister(instr.getRs());
 
-		//System.out.println("Instr: " + instr.decode());
-
 		// select input based on control signal
 		int data2 = MuxModel.mux(control.isAluSrc(), instr.getExtendedAddress(), regs.readRegister(instr.getRt()));
 
@@ -93,7 +91,6 @@ public class Controller {
 		} else if (control.isMemWrite()) {
 			memVal = regs.readRegister(instr.getRt());
 			DM.writeData(result, memVal);
-			
 		}
 
 		int output = MuxModel.mux(control.isMemToReg(), memVal, result);
