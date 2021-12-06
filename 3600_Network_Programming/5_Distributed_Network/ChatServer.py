@@ -491,7 +491,7 @@ class CRCServer(object):
     # Finally, broadcast a message informing the rest of the network about this new client.
     def handle_client_registration_message(self, select_key, message):
         if message.source_id in self.hosts_db:
-            msg = f"A machine has already registered with ID {message.source_id}"
+            msg = f"Someone has already registered with ID {message.source_id}"
             status_msg = StatusUpdateMessage.bytes(self.id, 0, 0x02, msg)
             self.send_message_to_unknown_io_device(select_key, status_msg)
             return
