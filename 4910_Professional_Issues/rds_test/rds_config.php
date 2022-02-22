@@ -1,4 +1,4 @@
-<form name="input" action="rds-write-config.php" method="post" class="form-horizontal">
+<form name="input" action="rds_write_config.php" method="post" class="form-horizontal">
   <div class="form-group">
     <label for="endpoint" class="col-sm-2 control-label">Endpoint</label>
     <div class="col-sm-10">
