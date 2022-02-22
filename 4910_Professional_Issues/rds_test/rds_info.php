@@ -1,0 +1,1 @@
+<?php $RDS_url=''; $RDS_db=''; $RDS_user=''; $RDS_pwd=''; ?>
