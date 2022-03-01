@@ -1,4 +1,4 @@
-<h2>DB Stuff</h2>
+<h3>DB Stuff</h3>
 <?php
     include("rds_info.php");
     
@@ -25,6 +25,11 @@
         "<th width=100>User type</th></tr>";
     
     while($row = $q_data -> fetch_array(MYSQLI_NUM)) {
+        for ($x = 0; $x <= 10; $x++) {
+            if (! isset($row[$x])) {
+                $row[$x] = null;
+            }
+        }
         Print "<tr><td>" . $row[0] . "</td> ";
         Print "<td>" . $row[1] . "</td> ";
         Print "<td>" . $row[2] . "</td> ";
@@ -38,4 +43,19 @@
         Print "<td>" . $row[10] . "</td></tr>";
     }
     Print "</table>";
+
+    $conn -> close();
+
+    if (isset($_POST["end_button"])) {
+        unset($_POST["end_button"]);
+        $file = fopen("rds_info.php", "w");
+        $data = "<?php \$RDS_url=''; \$RDS_db=''; \$RDS_user=''; \$RDS_pwd=''; ?>";
+        fwrite($file, $data);
+        fclose($file);
+        header("Refresh:2");
+    }
 ?>
+
+<form method="post">
+    <input type="submit" name="end_button" value="End Connection"/>
+</form>

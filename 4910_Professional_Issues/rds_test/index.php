@@ -5,6 +5,7 @@
   </head>
   
   <body>
+    <h2>Home Page</h2>
     <div class="container">
       <?php
         include("rds_info.php");
@@ -15,7 +16,6 @@
           include("rds_read.php");
         }
 
-        $conn -> close();
       ?>
     </div>
   </body>

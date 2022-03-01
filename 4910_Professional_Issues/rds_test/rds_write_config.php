@@ -2,12 +2,12 @@
 <html>
     <head>
         <title>EC2 Web Server And RDS Connection</title>
+        <meta http-equiv="refresh" content="10,URL=/index.php" />
     </head>
     <body>
         <div class="container">
             <?php
-                $ep = $_POST["endpoint"];
-                $ep = str_replace(":3306", "", $ep);
+                $ep = $_POST["endpoint"] . ":3306";
                 $db = $_POST["database"];
                 $un = $_POST["username"];
                 $pw = $_POST["password"];
@@ -23,6 +23,8 @@
                     fwrite($file, $data);
                     fclose($file);
                 }
+
+                Print "pulling data, redirecting shortly...";
 
                 $conn -> close();
             ?>
