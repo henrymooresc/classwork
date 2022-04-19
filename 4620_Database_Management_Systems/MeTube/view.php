@@ -56,7 +56,7 @@
 
         if ($file_type == "image")
         {
-            echo "<img src=" . $file_path . "/>";
+            echo "<img src=" . $file_path . ">";
         }
         else if ($file_type == "audio")
         {
