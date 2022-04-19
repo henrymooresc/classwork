@@ -29,12 +29,18 @@
     <body>
 
     <?php
-        if(!isset($_GET["id"]))
+        if(isset($_GET["id"]))
         {
-            echo "<meta http-equiv='refresh' content='0;url=browse.php'>";
+            $media_id = $_GET["id"];
+        }
+        else
+        {
+            $playlist_id = $_GET["playlist_id"];
+            $playlist_info_result = run_query("SELECT * FROM playlists WHERE id = '$playlist_id'");
+            $playlist_info = $playlist_info_result -> fetch_assoc();
+            $media_id = $playlist_info["media_id"];
         }
         
-        $media_id = $_GET["id"];
 
         run_query("UPDATE media SET view_count = view_count + 1 WHERE id = " . $media_id);
 

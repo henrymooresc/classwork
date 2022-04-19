@@ -60,9 +60,10 @@
                 <?php 
                     if (isset($_SESSION["username"]))
                     {
+                        $id = get_current_user_id();
                         echo "<li><a href='my_playlists.php'>Playlists</a></li>";
                         echo "<li><a href='favorites.php'>Favorites</a></li>";
-                        echo "<li><a href='channel.php'>Channel</a></li>";
+                        echo "<li><a href='channel.php?id=" . $id . "'>Channel</a></li>";
                         echo "<li><a href='profile.php'>Profile</a></li>";
                         echo "<li><a href='contacts.php'>Contacts</a></li>";
                         echo "<li><a href='messaging.php'>Messaging</a></li>";

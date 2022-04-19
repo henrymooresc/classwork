@@ -22,6 +22,14 @@ CREATE TABLE media (
 	FOREIGN KEY (uploader_id) REFERENCES users(id)
 );
 
+CREATE TABLE tags (
+	id INT NOT NULL AUTO_INCREMENT, 
+	media_id INT,
+	tag varchar(255),
+	PRIMARY KEY (id),
+	FOREIGN KEY (media_id) REFERENCES media(id) 
+);
+
 CREATE TABLE comments (
 	id INT NOT NULL AUTO_INCREMENT,  
 	media_id INT, 
@@ -42,15 +50,6 @@ CREATE TABLE contacts (
 	FOREIGN KEY (contact_id) REFERENCES users(id)
 );
 
-CREATE TABLE favorites (
-	id INT NOT NULL AUTO_INCREMENT, 
-	user_id INT,
-	media_id INT,
-	PRIMARY KEY (id),
-	FOREIGN KEY (user_id) REFERENCES users(id), 
-	FOREIGN KEY (media_id) REFERENCES media(id)
-);
-
 CREATE TABLE messages (
 	id INT NOT NULL AUTO_INCREMENT, 
 	to_id INT,
@@ -59,6 +58,15 @@ CREATE TABLE messages (
 	PRIMARY KEY (id),
 	FOREIGN KEY (to_id) REFERENCES users(id),
 	FOREIGN KEY (from_id) REFERENCES users(id)
+);
+
+CREATE TABLE favorites (
+	id INT NOT NULL AUTO_INCREMENT, 
+	user_id INT,
+	media_id INT,
+	PRIMARY KEY (id),
+	FOREIGN KEY (user_id) REFERENCES users(id), 
+	FOREIGN KEY (media_id) REFERENCES media(id)
 );
 
 CREATE TABLE playlists (
@@ -74,10 +82,11 @@ CREATE TABLE playlists (
 	FOREIGN KEY (next_id) REFERENCES playlists(id)
 );
 
-CREATE TABLE tags (
-	id INT NOT NULL AUTO_INCREMENT, 
-	media_id INT,
-	tag varchar(255),
+CREATE TABLE subscriptions (
+	id INT NOT NULL AUTO_INCREMENT,
+	sub_id INT,
+	sub_to_id INT,
 	PRIMARY KEY (id),
-	FOREIGN KEY (media_id) REFERENCES media(id) 
+	FOREIGN KEY (sub_id) REFERENCES users(id),
+	FOREIGN KEY (sub_to_id) REFERENCES users(id)
 );
