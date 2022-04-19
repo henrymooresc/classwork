@@ -1,5 +1,3 @@
-<!-- Original file: MeTube-master/playlist.php -->
-
 <!DOCTYPE html>
 
 <?php
@@ -10,6 +8,7 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
+
         <style type="text/css">
 
         </style>
@@ -23,7 +22,7 @@
             $playlist_result = run_query("SELECT * FROM playlists WHERE user_id = '$id' AND first = 1");
         ?>
 
-        <table>
+        <table id="my_playlists_table">
             <caption>My Playlists</caption>
             <tr>
                 <th>Name</th>
@@ -65,15 +64,19 @@
             }
         ?>
 
-        <form id="create_playlist_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-            <h4>Create a new playlist</h4>
+        <br>
 
-            <div class="form_field">
-                <label>Playlist name:</label>
-                <input type="text" name="name" required>
-            </div>
+        <div class="form_container">
+            <form id="create_playlist_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                <h4>Create a new playlist</h4>
 
-            <input name="create_playlist" type="submit" value="Create">
-        </form>
+                <div class="form_field">
+                    <label>Playlist name:</label>
+                    <input type="text" name="name" required>
+                </div>
+
+                <input name="create_playlist" type="submit" value="Create">
+            </form>
+        </div>
     </body>
 </html>

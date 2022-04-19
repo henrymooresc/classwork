@@ -1,5 +1,3 @@
-<!-- Original file: MeTube-master/media_upload_process.php -->
-
 <?php
 	include_once "navbar.php";
 	include_once "helpers.php";
@@ -72,25 +70,44 @@
         }
     }
 
-    //fix this
-    switch ($result)
+    if (isset($result))
     {
-        case 0:
-            echo "<meta http-equiv='refresh' content='0;url=view.php?id=$media_id'>";
-        case 1:
-            echo "Uploading error, file size exceeds maximum";
-        case 2:
-            echo "Uploading error, file size exceeds maximum";
-        case 3:
-            echo "Uploading error, file was only partially uploaded";
-        case 4:
-            echo "Uploading error, no file was uploaded";
-        case 5:
-            echo "Uploading error, file already exists";
-        case 6:
-            echo "Uploading error, file could not be moved from tmp directory to uploads";
-        case 7:
-            echo "Uploading error, file write to disk failed";
+        if ($result == 0)
+        {
+            header("Location: view.php?id=$media_id");
         }
+        else if ($result == 1)
+        {
+            echo "<h2>Uploading error, file size exceeds maximum<h2>";
+        }
+        else if ($result == 2)
+        {
+            echo "<h2>Uploading error, file size exceeds maximum</h2>";
+        }
+        else if ($result == 3)
+        {
+            echo "<h2>Uploading error, file was only partially uploaded</h2>";
+        }
+        else if ($result == 4)
+        {
+            echo "<h2>Uploading error, no file was uploaded</h2>";
+        }
+        else if ($result == 5)
+        {
+            echo "<h2>Uploading error, file already exists</h2>";
+        }
+        else if ($result == 6)
+        {
+            echo "<h2>Uploading error, file could not be moved from tmp directory to uploads</h2>";
+        }
+        else if ($result == 6)
+        {
+            echo "<h2>Uploading error, file write to disk failed<h2>";
+        }
+        else
+        {
+            echo "<h2>Something else broke but I'm not sure what!</h2>";
+        }
+    }
 ?>
 

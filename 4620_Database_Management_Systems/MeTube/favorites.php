@@ -1,5 +1,3 @@
-<!-- Original file: MeTube-master/favorites.php -->
-
 <!DOCTYPE html>
 
 <?php
@@ -10,7 +8,12 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
+
         <style type="text/css">
+
+            h2 {
+                text-align: center;
+            }
 
         </style>
 
@@ -45,7 +48,7 @@
                 }
         ?>
 
-        <table>
+        <table id="favs_table" class="media_table">
             <caption>My Favorite Media</caption>
             <tr>
                 <th>Title</th>

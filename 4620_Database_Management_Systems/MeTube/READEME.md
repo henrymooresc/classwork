@@ -3,11 +3,8 @@ For updating MySQL run -> mysql -h mysql1.cs.clemson.edu -u mtbprmry_006u -p met
 
 https://askubuntu.com/questions/767504/permissions-problems-with-var-www-html-and-my-own-home-directory-for-a-website
 
-
-Reviewed files:
-
-
 TODO:
     * Clean up formatting
     * Review all files
     * Update php.ini on the web server
+    * change db password

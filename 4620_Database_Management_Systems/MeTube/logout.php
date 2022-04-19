@@ -1,18 +1,14 @@
-<!-- Original file: MeTube-master/logout.php -->
-
 <?php
     session_start();
     
     $_SESSION = array();
-    if (ini_get("session.use_cookies")) {
-        $params = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 42000,
-            $params["path"], $params["domain"],
-            $params["secure"], $params["httponly"]
-        );
+
+    if (ini_get("session.use_cookies"))
+    {
+        $cookie_param = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000, $cookie_param["path"], $cookie_param["domain"], $cookie_param["secure"], $cookie_param["httponly"]);
     }
     
-    //session_unset();
     session_destroy();
     header("Location: homepage.php");
 ?>

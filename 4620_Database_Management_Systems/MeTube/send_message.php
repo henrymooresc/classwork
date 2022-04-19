@@ -1,5 +1,3 @@
-<!-- Original file: MeTube-master/message.php -->
-
 <!DOCTYPE html>
 
 <?php
@@ -10,6 +8,7 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
+
         <style type="text/css">
 
         </style>
@@ -80,20 +79,22 @@
             }
         ?>
 
-        <form id="send_message_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-            <h4>Send Message</h4>    
+        <div class="form_container">
+            <form id="send_message_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                <h4>Send Message</h4>    
 
-            <div class="form_field">
-                <label>Send to:</label>
-                <input type="text" name="recipient" required>
-            </div>
+                <div class="form_field">
+                    <label>Send to:</label>
+                    <input type="text" name="recipient" required>
+                </div>
 
-            <div class="form_field">
-                <label>Message content:</label>
-                <input type="text" name="content" required>
-            </div>
+                <div class="form_field">
+                    <label>Message content:</label>
+                    <input type="text" name="content" required>
+                </div>
 
-            <input name="send_message" type="submit" value="Send Message">
-        </form>
+                <input name="send_message" type="submit" value="Send Message">
+            </form>
+        </div>
     </body>
 </html>

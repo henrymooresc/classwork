@@ -1,6 +1,16 @@
-<!-- Original file: MeTube-master/register.php -->
+<!DOCTYPE html>
 
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+        <style type="text/css">
+            
+        </style>
+
+        <title>Register</title>
+    </head>
+
     <body>
         <?php
             include_once "navbar.php";
@@ -40,28 +50,30 @@
             }
         ?>
 
-        <form id="register_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-            <div class="form_field">
-                <label>Email Address:</label>
-                <input type="text" name="email" required>
-            </div>
+        <div class="form_container">
+            <form id="register_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                <div class="form_field">
+                    <label>Email Address:</label>
+                    <input type="text" name="email" required>
+                </div>
+                
+                <div class="form_field">
+                    <label>Username:</label>
+                    <input type="text" name="username" required>
+                </div>
+                
+                <div class="form_field">
+                    <label>Create Password:</label>
+                    <input type="password" name="pass1" required>
+                </div>
+                
+                <div class="form_field">
+                    <label>Confirm Password:</label>
+                    <input type="password" name="pass2" required>
+                </div>
             
-            <div class="form_field">
-                <label>Username:</label>
-                <input type="text" name="username" required>
-            </div>
-            
-            <div class="form_field">
-                <label>Create Password:</label>
-                <input type="password" name="pass1" required>
-            </div>
-            
-            <div class="form_field">
-                <label>Confirm Password:</label>
-                <input type="password" name="pass2" required>
-            </div>
-        
-            <input name="submit" type="submit" value="Submit">
-        </form>
+                <input name="submit" type="submit" value="Submit">
+            </form>
+        </div>
     </body>
 </html>

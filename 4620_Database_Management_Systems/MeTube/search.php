@@ -21,6 +21,6 @@
     }
 
     $_SESSION["search_results"] = $search_result_ids;
-    header("Refresh:0; url=browse.php");
+    header("Location: browse.php");
 ?>
 

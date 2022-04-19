@@ -8,6 +8,7 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
+
         <style type="text/css">
 
         </style>
@@ -29,7 +30,7 @@
             {
         ?>
 
-        <table>
+        <table id="playlist_media_table">
             <caption><?php echo $playlist_head["name"]?> Playlist:</caption>
             <tr>
                 <th>Media Index</th>

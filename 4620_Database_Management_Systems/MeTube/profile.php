@@ -1,5 +1,3 @@
-<!-- Original file: MeTube-master/profile.php -->
-
 <!DOCTYPE html>
 
 <?php
@@ -13,6 +11,8 @@
 
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+
         <style type="text/css">
             
         </style>
@@ -55,14 +55,18 @@
 
         <h2><?php echo $user_info["username"] ?>'s Profile Information</h2>
 
-        <form id="update_email_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-            <div class="form_field">
-                <label>Email Address:</label>
-                <input type="text" name="email" value=<?php echo $user_info["email"] ?> required>
-            </div>
+        <br>
 
-            <input name="update_email" type="submit" value="Update Email">
-        </form>
+        <div class="form_container">
+            <form id="update_email_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                <div class="form_field">
+                    <label>Email Address:</label>
+                    <input type="text" name="email" value=<?php echo $user_info["email"] ?> required>
+                </div>
+
+                <input name="update_email" type="submit" value="Update Email">
+            </form>
+        </div>
 
         <?php 
             if (isset($_POST["update_password"]))
@@ -89,23 +93,28 @@
                 }
             }
         ?>
-        <form id="update_password_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-            <div class="form_field">
-                <label>Current Password:</label>
-                <input type="password" name="current_pass" required>
-            </div>
-            
-            <div class="form_field">
-                <label>New Password:</label>
-                <input type="password" name="new_pass1" required>
-            </div>
 
-            <div class="form_field">
-                <label>New Password:</label>
-                <input type="password" name="new_pass2" required>
-            </div>
+        <br>
 
-            <input name="update_password" type="submit" value="Update Password">
-        </form>
+        <div class="form_container">
+            <form id="update_password_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                <div class="form_field">
+                    <label>Current Password:</label>
+                    <input type="password" name="current_pass" required>
+                </div>
+                
+                <div class="form_field">
+                    <label>New Password:</label>
+                    <input type="password" name="new_pass1" required>
+                </div>
+
+                <div class="form_field">
+                    <label>New Password:</label>
+                    <input type="password" name="new_pass2" required>
+                </div>
+
+                <input name="update_password" type="submit" value="Update Password">
+            </form>
+        </div>
     </body>
 </html>

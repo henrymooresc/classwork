@@ -1,5 +1,3 @@
-<!-- Original file: MeTube-master/message.php -->
-
 <!DOCTYPE html>
 
 <?php
@@ -10,6 +8,7 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
+
         <style type="text/css">
 
         </style>
@@ -18,7 +17,7 @@
     </head>
 
     <body>
-        <table>
+        <table id="recv_message_table">
             <caption>My Recieved Messages</caption>
             <tr>
                 <th>Sender</th>
@@ -44,7 +43,9 @@
             ?>
         </table>
 
-        <table>
+        <br>
+
+        <table id="sent_message_table">
             <caption>My Sent Messages</caption>
             <tr>
                 <th>Recipient</th>
@@ -67,6 +68,8 @@
                 }
             ?>
         </table>
+
+        <br>
 
         <a href="send_message.php"><button type="button">Send Message</button></a>
     </body>

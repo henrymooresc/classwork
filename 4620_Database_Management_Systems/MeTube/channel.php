@@ -8,7 +8,12 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
+
         <style type="text/css">
+
+            #channel_header {
+                text-align: center;
+            }
 
         </style>
 
@@ -36,7 +41,7 @@
             }
         ?>
 
-        <h3>Welcome to <?php echo $channel_owner["username"] ?>'s Channel!</h3>
+        <h3 id="channel_header">Welcome to <?php echo $channel_owner["username"] ?>'s Channel!</h3><br>
 
         <?php
             if ($channel_id !== $my_id)
@@ -55,7 +60,9 @@
             }
         ?>
 
-        <table>
+        <br>
+
+        <table id="channel_stats">
             <caption>Channel Stats</caption>
             <tr>
                 <th>Total Media Uploaded</th>
@@ -69,7 +76,9 @@
             </tr>
         </table>
 
-        <table>
+        <br>
+
+        <table class="media_table">
             <caption>Media Results</caption>
             <tr>
                 <th>Title</th>

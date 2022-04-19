@@ -1,5 +1,3 @@
-<!-- Original file: MeTube-master/browse.php -->
-
 <!DOCTYPE html>
 
 <?php
@@ -10,6 +8,7 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
+        
         <style type="text/css">
 
         </style>
@@ -49,7 +48,7 @@
             }
         ?>
 
-        <table>
+        <table class="media_table">
             <caption>Media Results</caption>
             <tr>
                 <th>Title</th>

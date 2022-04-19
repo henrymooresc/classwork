@@ -1,5 +1,3 @@
-<!-- Original file: MeTube-master/contacts.php -->
-
 <!DOCTYPE html>
 
 <?php
@@ -11,6 +9,7 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
+
         <style type="text/css">
 
         </style>
@@ -19,7 +18,7 @@
     </head>
 
     <body>
-        <table>
+        <table id="contacts_table">
             <caption>Contact List</caption>
             <tr>
                 <th>Username</th>
@@ -43,6 +42,8 @@
                 }
             ?>
         </table>
+
+        <br>
 
         <?php
             if (isset($_POST["submit_contact"]))
@@ -75,21 +76,25 @@
             }
         ?>
 
-        <form id="add_contact_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-            <h4>Add a user contact</h4>    
+        <div class="form_container">
+            <form id="add_contact_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                <h4>Add a user contact</h4>
 
-            <div class="form_field">
-                <label>Contact username:</label>
-                <input type="text" name="new_contact" required>
-            </div>
+                <div class="form_field">
+                    <label>Contact username:</label>
+                    <input type="text" name="new_contact" required>
+                </div>
 
-            <div class="form_field">
-                <label>Contact label:</label>
-                <input type="text" name="label" required>
-            </div>
+                <div class="form_field">
+                    <label>Contact label:</label>
+                    <input type="text" name="label" required>
+                </div>
 
-            <input name="submit_contact" type="submit" value="Add User as Contact">
-        </form>
+                <input name="submit_contact" type="submit" value="Add User as Contact">
+            </form>
+        </div>
+
+        <br>
 
         <?php
             if (isset($_POST["submit_remove"]))
@@ -111,15 +116,17 @@
             }
         ?>
 
-        <form id="remove_contact_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-            <h4>Remove a user contact</h4>    
+        <div class="form_container">
+            <form id="remove_contact_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                <h4>Remove a user contact</h4>
 
-            <div class="form_field">
-                <label>Contact username:</label>
-                <input type="text" name="contact" required>
-            </div>
+                <div class="form_field">
+                    <label>Contact username:</label>
+                    <input type="text" name="contact" required>
+                </div>
 
-            <input name="submit_remove" type="submit" value="Remove User as Contact">
-        </form>
+                <input name="submit_remove" type="submit" value="Remove User as Contact">
+            </form>
+        </div>
     </body>
 </html>

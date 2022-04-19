@@ -11,16 +11,6 @@
 
         <style type="text/css">
 
-            #view_forms {
-                padding: 10px;
-            }
-
-            #view_forms form {
-                margin: 10px;
-                padding: 5px;
-                background-color: lightgray;
-            }
-
         </style>
         
         <title>Viewing Media</title>
@@ -62,6 +52,8 @@
         $uploader_id = $media_data["uploader_id"];
         $uploader_result = run_query("SELECT username FROM users WHERE id = " . $uploader_id);
         $uploader = ($uploader_result -> fetch_row())[0];
+
+        echo "<br><h3>Media View</h3><br>";
 
         if ($file_type == "image")
         {
@@ -120,34 +112,68 @@
             </table>
         </div>
 
+        <br>
+
         <a href="process_download.php?id=<?php echo $media_id ?>"><button type="button">Download media</button></a>
 
+        <br>
+
+        <?php
+            if (isset($playlist_info))
+            {
+                $next_id = $playlist_info["next_id"];
+
+                if (is_null($next_id))
+                {
+                    echo "<h4>End of playlist!</h4>";
+                }
+                else
+                {
+                    echo "<a href=view.php?playlist_id=$next_id>View next media in playlist</a>";
+                }
+            }
+        ?>
+
+        <br>
+
         <div id="view_forms">
-            <form method="post" action="add_to_favorites.php">
-                <input type="hidden" name="media_id" value="<?php echo $media_id;?>">
-                <input type="submit" value="Add media to favorites">
-            </form>
+            <div class="form_container">
+                <form method="post" action="add_to_favorites.php">
+                    <input type="hidden" name="media_id" value="<?php echo $media_id;?>">
+                    <input type="submit" value="Add media to favorites">
+                </form>
+            </div>
 
-            <form method="post" action="add_to_playlist.php">
-                <input type="hidden" name="media_id" value="<?php echo $media_id;?>">
-                <div class="form_field">
-                    <label>Playlist name:</label>
-                    <input type="text" name="playlist_name">
-                </div>
-                <input type="submit" value="Add media to playlist">
-            </form>
+            <br>
 
-            <form method="post" action="add_comment.php">
-                <input type="hidden" name="media_id" value="<?php echo $media_id;?>">
-                <div class="form_field">
-                    <label>Add comment:</label>
-                    <input type="text" name="comment" required>
-                </div>
-                <input type="submit" value="Add comment to media">
-            </form>
+            <div class="form_container">
+                <form method="post" action="add_to_playlist.php">
+                    <input type="hidden" name="media_id" value="<?php echo $media_id;?>">
+                    <div class="form_field">
+                        <label>Playlist name:</label>
+                        <input type="text" name="playlist_name">
+                    </div>
+                    <input type="submit" value="Add media to playlist">
+                </form>
+            </div>
+
+            <br>
+
+            <div class="form_container">
+                <form method="post" action="add_comment.php">
+                    <input type="hidden" name="media_id" value="<?php echo $media_id;?>">
+                    <div class="form_field">
+                        <label>Add comment:</label>
+                        <input type="text" name="comment" required>
+                    </div>
+                    <input type="submit" value="Add comment to media">
+                </form>
+            </div>
         </div>
 
-        <table>
+        <br>
+
+        <table id="comments_table">
             <caption>Comments</caption>
             <tr>
                 <th> User </th>
@@ -159,12 +185,12 @@
 
                 if ($comments_result)
                 {
-                    while ($row = $comments_result -> fetch_assoc()) {
-                        $commenter_id = $row["user_id"];
+                    while ($entry = $comments_result -> fetch_assoc()) {
+                        $commenter_id = $entry["user_id"];
                         $commenter_result = run_query("SELECT username FROM users WHERE id = '$commenter_id'");
                         $commenter = ($commenter_result -> fetch_row())[0];
 
-                        $text = $row["comment_text"];
+                        $text = $entry["comment_text"];
                         echo "<tr><td>$commenter</td>";
                         echo "<td>$text</td></tr>";
                     }

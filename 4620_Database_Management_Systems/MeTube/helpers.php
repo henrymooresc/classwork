@@ -1,5 +1,3 @@
-<!-- Original file: MeTube-master/function.php -->
-
 <?php
     $host = "mysql1.cs.clemson.edu";
     $user = "mtbprmry_006u";
@@ -72,7 +70,7 @@
         global $conn;
         $username = $_SESSION["username"];
 
-        $result = $conn -> query("SELECT id FROM users WHERE username = '" . $username . "'");
+        $result = $conn -> query("SELECT id FROM users WHERE username = '$username'");
         $id = $result -> fetch_row();
 
         return $id[0];
