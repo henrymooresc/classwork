@@ -100,7 +100,7 @@
         {
             echo "<h2>Uploading error, file could not be moved from tmp directory to uploads</h2>";
         }
-        else if ($result === 6)
+        else if ($result === 7)
         {
             echo "<h2>Uploading error, file write to disk failed<h2>";
         }
