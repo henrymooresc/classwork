@@ -11,6 +11,8 @@
     }
 
     session_start();
+
+    include_once("helpers.php");
 ?>
 
 <html>

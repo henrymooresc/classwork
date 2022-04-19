@@ -52,5 +52,10 @@
                 }
             }
         }
+
+        unlink($media_info["path"]);
+
+        run_query("DELETE FROM media WHERE id = '$media_id'");
+        header("Location: channel.php?id=$my_id");
     }
 ?>

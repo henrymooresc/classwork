@@ -75,7 +75,7 @@
                 
                     echo "<tr>";
                     echo "<td>" . $title . "</td>";
-                    echo "<td>" . $uploader . "</td>";
+                    echo "<td><a href=channel.php?id=" . $uploader_id . ">" . $uploader . "</a></td>";
                     echo "<td>" . $upload_date . "</td>";
                     echo "<td>" . $file_type . "</td>";
                     echo "<td>" . $category . "</td>";

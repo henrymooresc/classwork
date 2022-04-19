@@ -36,6 +36,7 @@
             {
                 $id = get_current_user_id();
                 $media_result = run_query("SELECT * FROM media WHERE uploader_id = '$id' ORDER BY upload_date");
+                $subscriptions_result = run_query("SELECT * FROM subscriptions WHERE sub_id = '$id'");
         ?>
 
         <a href="upload.php"><button type="button">Upload Media</button></a>
@@ -51,15 +52,15 @@
                 <th>Total Views</th>
             </tr>
             <?php
-                while ($row = $media_result -> fetch_assoc())
+                while ($entry = $media_result -> fetch_assoc())
                 {
-                    $media_id = $row["id"];
-                    $file_type = $row["type"];
-                    $upload_date = $row["upload_date"];
-                    $title = $row["title"];
-                    $category = $row["category"];
-                    $view_count = $row["view_count"];
-                    $uploader_id = $row["uploader_id"];
+                    $media_id = $entry["id"];
+                    $file_type = $entry["type"];
+                    $upload_date = $entry["upload_date"];
+                    $title = $entry["title"];
+                    $category = $entry["category"];
+                    $view_count = $entry["view_count"];
+                    $uploader_id = $entry["uploader_id"];
 
                     $username_result = run_query("SELECT username FROM users WHERE id = " . $uploader_id);
                     $uploader = ($username_result -> fetch_row())[0];
@@ -72,6 +73,28 @@
                     echo "<td>" . $category . "</td>";
                     echo "<td>" . $view_count . "</td>";
                     echo "<td><a href=view.php?id=" . $media_id . ">view</a></td>";
+                    echo "<tr>";
+                }
+            ?>
+        </table>
+
+        <table>
+            <caption>My Subscriptions</caption>
+            <tr>
+                <th>Channel Owner</th>
+                <th>Link to Channel</th>
+            </tr>
+            <?php
+                while ($entry = $subscriptions_result -> fetch_assoc())
+                {
+                    $sub_to_id = $entry["sub_to_id"];
+
+                    $username_result = run_query("SELECT username FROM users WHERE id = " . $sub_to_id);
+                    $channel_owner = ($username_result -> fetch_row())[0];
+                
+                    echo "<tr>";
+                    echo "<td>" . $channel_owner . "</td>";
+                    echo "<td><a href=channel.php?id=" . $sub_to_id . ">view</a></td>";
                     echo "<tr>";
                 }
             ?>

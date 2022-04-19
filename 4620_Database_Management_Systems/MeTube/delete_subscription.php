@@ -7,5 +7,5 @@
 
     run_query("DELETE FROM subscriptions WHERE sub_id = '$sub_id' AND sub_to_id = '$sub_to_id'");
 
-    header("Location: channel.php?id='$sub_to_id'");
+    header("Location: channel.php?id=$sub_to_id");
 ?>

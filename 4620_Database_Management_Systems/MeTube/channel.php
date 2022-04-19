@@ -46,11 +46,11 @@
 
                 if ($subscribed_check == 0)
                 {
-                    echo "<a href=add_subscription.php?sub_id='$my_id'&sub_to_id='$channel_id'><button type='button'>Subscribe?</button></a>";
+                    echo "<a href=add_subscription.php?sub_id=$my_id&sub_to_id=$channel_id><button type='button'>Subscribe?</button></a>";
                 }
                 else
                 {
-                    echo "<a href=delete_subscription.php?sub_id='$my_id'&sub_to_id='$channel_id'><button type='button'>UnSubscribe?</button></a>";
+                    echo "<a href=delete_subscription.php?sub_id=$my_id&sub_to_id=$channel_id><button type='button'>UnSubscribe?</button></a>";
                 }
             }
         ?>

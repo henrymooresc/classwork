@@ -101,7 +101,7 @@
                 <tr>
                     <?php
                         echo "<td>" . $title . "</td>";
-                        echo "<td>" . $uploader . "</td>";
+                        echo "<td><a href=channel.php?id=" . $uploader_id . ">" . $uploader . "</a></td>";
                         echo "<td>" . $upload_date . "</td>";
                         echo "<td>" . $view_count . "</td>";
                         echo "<td>" . $description . "</td>";
