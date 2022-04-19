@@ -72,35 +72,35 @@
 
     if (isset($result))
     {
-        if ($result == 0)
+        if ($result === 0)
         {
             header("Location: view.php?id=$media_id");
         }
-        else if ($result == 1)
+        else if ($result === 1)
         {
             echo "<h2>Uploading error, file size exceeds maximum<h2>";
         }
-        else if ($result == 2)
+        else if ($result === 2)
         {
             echo "<h2>Uploading error, file size exceeds maximum</h2>";
         }
-        else if ($result == 3)
+        else if ($result === 3)
         {
             echo "<h2>Uploading error, file was only partially uploaded</h2>";
         }
-        else if ($result == 4)
+        else if ($result === 4)
         {
             echo "<h2>Uploading error, no file was uploaded</h2>";
         }
-        else if ($result == 5)
+        else if ($result === 5)
         {
             echo "<h2>Uploading error, file already exists</h2>";
         }
-        else if ($result == 6)
+        else if ($result === 6)
         {
             echo "<h2>Uploading error, file could not be moved from tmp directory to uploads</h2>";
         }
-        else if ($result == 6)
+        else if ($result === 6)
         {
             echo "<h2>Uploading error, file write to disk failed<h2>";
         }

@@ -1,7 +1,7 @@
 <?php
     $host = "mysql1.cs.clemson.edu";
     $user = "mtbprmry_006u";
-    $pass = "theriverruns@then1ghT";
+    $pass = "T@WVr3\$vn";
     $db = "metube_primary_sta9";
 
     $conn = new mysqli($host, $user, $pass, $db);

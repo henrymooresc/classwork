@@ -31,7 +31,6 @@
             $media_id = $playlist_info["media_id"];
         }
         
-
         run_query("UPDATE media SET view_count = view_count + 1 WHERE id = " . $media_id);
 
         $result = run_query("SELECT * FROM media WHERE id = " . $media_id);
