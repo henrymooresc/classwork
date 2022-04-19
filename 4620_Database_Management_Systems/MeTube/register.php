@@ -34,7 +34,7 @@
 
                 if ($valid)
                 {
-                    $result = register_user($_POST["username"], $_POST["pass1"], $_POST["email"]);	
+                    $result = register_user(addslashes($_POST["username"]), $_POST["pass1"], $_POST["email"]);	
 
                     if ($result)
                     {

@@ -3,7 +3,7 @@
     include_once "helpers.php";
 
     $search_result_ids = array();
-    $search_data = $_POST["search_data"];
+    $search_data = addslashes($_POST["search_data"]);
     
     $title_result = run_query("SELECT id FROM media WHERE title LIKE '%$search_data%'");
     while ($entry = $title_result -> fetch_assoc())

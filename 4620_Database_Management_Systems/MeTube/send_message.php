@@ -46,7 +46,7 @@
 
             if (isset($_POST["send_message"]))
             {
-                $recipient = $_POST["recipient"];
+                $recipient = addslashes($_POST["recipient"]);
 
                 $recipient_info_result = run_query("SELECT * FROM users WHERE username = '$recipient'");
                 $recipient_info = $recipient_info_result -> fetch_assoc();
@@ -64,7 +64,7 @@
                     }
                     else
                     {
-                        $content = $_POST["content"];
+                        $content = addslashes($_POST["content"]);
                         run_query("INSERT INTO messages (to_id, from_id, content) VALUES ('$recipient_id', '$id', '$content')");
                         
                         unset($_POST["recipient"]);

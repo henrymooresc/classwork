@@ -48,7 +48,7 @@
         <?php
             if (isset($_POST["submit_contact"]))
             {
-                $contact_username = $_POST["new_contact"];
+                $contact_username = addslashes($_POST["new_contact"]);
                 $contact_info_result = run_query("SELECT * FROM users WHERE username = '$contact_username'");
                 $contact_info = $contact_info_result -> fetch_assoc();
 
@@ -99,7 +99,7 @@
         <?php
             if (isset($_POST["submit_remove"]))
             {
-                $contact_username = $_POST["contact"];
+                $contact_username = addslashes($_POST["contact"]);
                 $contact_info_result = run_query("SELECT * FROM users WHERE username = '$contact_username'");
                 $contact_info = $contact_info_result -> fetch_assoc();
 

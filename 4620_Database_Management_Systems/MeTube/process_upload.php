@@ -37,13 +37,14 @@
                 }
                 else
                 {
-                    $title = $_POST["title"];
-                    $description = $_POST["description"];
-                    $category = $_POST["category"];
+                    $title = addslashes($_POST["title"]);
+                    $description = addslashes($_POST["description"]);
+                    $category = addslashes($_POST["category"]);
                     $user_id = get_current_user_id();
                     $type = substr($_FILES["file"]["type"], 0, 5);
 
                     $query = "INSERT INTO media (file_name, type, path, title, description, category, view_count, uploader_id)" . "VALUES ('" . urlencode($_FILES["file"]["name"]) . "', '" . $type . "', '" . $upload_path . "', '" . $title . "', '" . $description . "', '" . $category . "', " . 0 . ", '" . $user_id . "')";
+                    
                     run_query($query);
 
                     chmod($upload_path, 0644);

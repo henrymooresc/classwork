@@ -37,7 +37,7 @@
                 
                 if ($valid)
                 {
-                    $result = login_auth($_POST["username"], $_POST["password"]);
+                    $result = login_auth(addslashes($_POST["username"]), $_POST["password"]);
 
                     if (!$result)
                     {

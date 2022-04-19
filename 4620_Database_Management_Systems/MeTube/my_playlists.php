@@ -47,7 +47,7 @@
         <?php
             if (isset($_POST["create_playlist"]))
             {
-                $playlist_name = $_POST["name"];
+                $playlist_name = addslashes($_POST["name"]);
 
                 $check_playlists = run_query("SELECT * FROM playlists WHERE user_id = '$id' AND name = '$playlist_name'");
                 $check_results = $check_playlists -> fetch_assoc();

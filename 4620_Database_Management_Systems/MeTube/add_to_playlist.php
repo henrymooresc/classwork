@@ -4,7 +4,7 @@
 
     $user_id = get_current_user_id();
     $media_id = $_POST["media_id"];
-    $playlist_name = $_POST["playlist_name"];
+    $playlist_name = addslashes($_POST["playlist_name"]);
 
     $playlist_check_result = run_query("SELECT * FROM playlists WHERE user_id = '$user_id' AND name = '$playlist_name' AND first = 1");
     $playlist_head = $playlist_check_result -> fetch_assoc();
