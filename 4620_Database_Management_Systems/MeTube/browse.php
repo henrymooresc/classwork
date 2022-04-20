@@ -33,7 +33,7 @@
                 }
                 $query = $query . ")";
 
-                session_unset("search_results");
+                unset($_SESSION["search_results"]);
             }
             else 
             {
