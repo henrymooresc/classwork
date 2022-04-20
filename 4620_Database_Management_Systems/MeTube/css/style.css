@@ -1,0 +1,24 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #ddd;
+    text-align: left;
+    padding: 8px;
+}
+
+.form_container {
+    margin: auto;
+    margin-top: 15px;
+    width: 30%;
+    padding: 20px;
+    background-color: lightgrey;
+    border-radius: 8px;
+}
+
+.form_field {
+    padding: 10px;
+    display: inline-block;
+}
